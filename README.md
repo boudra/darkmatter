@@ -9,7 +9,8 @@ The porject has these dependencies:
 * **FreeType2** for font loading
 * **GLEW** for managing OpenGL extensions
 * **DevIL** for loading a wide range of image formats
-* **SDL2** for clors platform input handling and window creation
+* **SDL2** for cross platform input handling and window creation
+* **cppformat** for 
 
 TODO List:
 
@@ -21,6 +22,7 @@ TODO List:
 * [X] Create engine's own map format
 * [ ] A simple threadpool, also make all the systems multithreaded
 * [ ] Add **Google V8 Javascript engine** for dynamic script interpeting
+* [ ] GUI & HUD
 * ...
 
 
@@ -35,6 +37,5 @@ cd darkmatter
 cmake .
 make
 ```
-
 
 I will be making a demo soon.
