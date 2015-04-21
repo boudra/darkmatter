@@ -10,7 +10,7 @@ The porject has these dependencies:
 * **GLEW** for managing OpenGL extensions
 * **DevIL** for loading a wide range of image formats
 * **SDL2** for cross platform input handling and window creation
-* **cppformat** for 
+* **cppformat** for log formatting and safe printf-like syntax
 
 TODO List:
 
