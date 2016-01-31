@@ -33,29 +33,29 @@ struct Tile {
     Entity* entity = nullptr;
 };
 
-dm_start_component(BodyComponent);
+struct BodyComponent : public Component {
+    BodyComponent() : position(0, 0), dirty(true), lock(false) {}
 
-BodyComponent() : position(0, 0), dirty(true), lock(false) {}
+    Vec2i position;
+    bool dirty;
+    bool lock;
+    bool ghost = false;
+    Direction direction = Direction::RIGHT;
 
-Vec2i position;
-bool dirty;
-bool lock;
-bool ghost = false;
-Direction direction = Direction::RIGHT;
+    void execute(const Command::Type& type, const Any& data = nullptr,
+                 const std::function<void()> callback = nullptr) {
+        commands.push({type, data, callback});
+    }
 
-void execute(const Command::Type& type, const Any& data = nullptr,
-             const std::function<void()> callback = nullptr) {
-    commands.push({type, data, callback});
-}
+    void pop_command() {
+        if (commands.top().callback) commands.top().callback();
+        commands.pop();
+    }
 
-void pop_command() {
-    if (commands.top().callback) commands.top().callback();
-    commands.pop();
-}
+    std::stack<Command> commands;
 
-std::stack<Command> commands;
-
-dm_end_component(BodyComponent);
+    dm_register_component(BodyComponent);
+};
 
 } /* namespace dm */
 

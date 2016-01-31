@@ -16,48 +16,48 @@ struct AABB {
     Vec3f max;
 };
 
-dm_start_component(PhysicsComponent);
+struct PhysicsComponent : public Component {
+    PhysicsComponent()
+        : scale(1.0f),
+          mass(1.0f),
+          max_velocity(2.0f),
+          friction(1.0f),
+          velocity(0.0f),
+          acceleration(0.0f),
+          position(0.0f),
+          size(0.0f),
+          transform(1.0f),
+          rotation(),
+          rotation_origin(0.0f),
+          scale_origin(0.0f) {}
 
-PhysicsComponent()
-    : scale(1.0f),
-      mass(1.0f),
-      max_velocity(2.0f),
-      friction(1.0f),
-      velocity(0.0f),
-      acceleration(0.0f),
-      position(0.0f),
-      size(0.0f),
-      transform(1.0f),
-      rotation(),
-      rotation_origin(0.0f),
-      scale_origin(0.0f) {}
+    inline void set_size(const Vec3f& size) {
+        this->size = size;
+        pivot = this->size.x * 0.5f;
+    }
 
-inline void set_size(const Vec3f& size) {
-    this->size = size;
-    pivot = this->size.x * 0.5f;
-}
+    Vec3f scale;
 
-Vec3f scale;
+    float mass;
+    float max_velocity;
+    float friction;
 
-float mass;
-float max_velocity;
-float friction;
+    Vec3f velocity;
+    Vec3f acceleration;
+    Vec3f position;
+    Vec3f size;
 
-Vec3f velocity;
-Vec3f acceleration;
-Vec3f position;
-Vec3f size;
+    Matrix4f transform;
+    Quaternion rotation;
+    Vec3f rotation_origin;
+    Vec3f scale_origin;
 
-Matrix4f transform;
-Quaternion rotation;
-Vec3f rotation_origin;
-Vec3f scale_origin;
+    AABB aabb;
 
-AABB aabb;
+    Vec3f pivot;
 
-Vec3f pivot;
-
-dm_end_component(PhysicsComponent);
+    dm_register_component(PhysicsComponent);
+};
 }
 
 #endif

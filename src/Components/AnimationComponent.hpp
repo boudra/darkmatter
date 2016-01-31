@@ -46,15 +46,14 @@ struct SpriteAnimation {
 
 class AnimationSystem;
 
-dm_start_component(AnimationComponent);
-
-std::vector<size_t> animations;
-static AnimationSystem* s_animations;
-size_t animate(const std::string& name, const float speed, const bool loop,
-               std::function<void(Entity*)> callback = nullptr);
-void stop(const size_t id);
-
-dm_end_component(AnimationComponent);
+struct AnimationComponent : public Component {
+    std::vector<size_t> animations;
+    static AnimationSystem* s_animations;
+    size_t animate(const std::string& name, const float speed, const bool loop,
+                   std::function<void(Entity*)> callback = nullptr);
+    void stop(const size_t id);
+    dm_register_component(AnimationComponent);
+}
 
 struct AnimationInstance {
     size_t animation;

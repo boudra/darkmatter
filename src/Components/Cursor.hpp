@@ -5,9 +5,10 @@
 
 namespace dm {
 
-dm_start_component(Cursor);
-Entity* selected = nullptr;
-dm_end_component(Cursor);
+struct Cursor : public Component {
+    Entity* selected = nullptr;
+    dm_register_component(Cursor);
+};
 
 } /* namespace dm */
 

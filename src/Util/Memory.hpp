@@ -165,7 +165,7 @@ class MemoryPool {
 
     void cleanup() {
         Log::progress("debug", "Cleaning up the memory pool for %s",
-                dm_type_name(object_type));
+                      dm_type_name(object_type));
 
         assert(dm_type_name(object_type) != dm_type_name(size_t));
         Block* block = first_block_;
@@ -221,7 +221,7 @@ class MemoryPool {
        public:
         Iterator(MemoryPool<object_type>& pool, object_type* pos)
             : current_(pos), current_block_(pool.last_block_), pool_(pool) {
-            if(current_ != pool.end_ptr()) {
+            if (current_ != pool.end_ptr()) {
                 current_block_ = pool_.get_block(current_);
             }
         }
@@ -284,7 +284,8 @@ class MemoryPool {
     const size_t size() { return size_; }
 
    private:
-    MemoryPool() : first_block_(nullptr), last_block_(nullptr), size_(0), mut_() {}
+    MemoryPool()
+        : first_block_(nullptr), last_block_(nullptr), size_(0), mut_() {}
 
     Block* first_block_;
     Block* last_block_;
@@ -293,7 +294,7 @@ class MemoryPool {
     std::mutex mut_;
 };
 
-#define MEMORY_POOL(object_type)                                               \
+#define dm_memory_pool_impl(object_type)                                       \
     void* operator new(size_t size) {                                          \
         object_type* ptr = MemoryPool<object_type>::instance().allocate(size); \
         return ptr;                                                            \
@@ -302,6 +303,13 @@ class MemoryPool {
         MemoryPool<object_type>::instance().deallocate(                        \
             static_cast<object_type*>(ptr));                                   \
     }
+
+#define dm_memory_pool(object_type)                            \
+    dm_memory_pool_impl(object_type)                           \
+    }                                                          \
+    ;                                                          \
+    dm_internal_register_type_name(object_type, #object_type); \
+    namespace dummy {
 }
 
 #endif

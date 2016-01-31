@@ -11,8 +11,6 @@ namespace dm {
 
 class Entity {
    public:
-    MEMORY_POOL(Entity)
-
     Entity() {}
 
     template <class ComponentType>
@@ -26,7 +24,7 @@ class Entity {
     ComponentType& assign() {
         ComponentType* component = new ComponentType();
         components[COMPONENT(ComponentType)] =
-            static_cast<ComponentBase*>(component);
+            static_cast<Component*>(component);
         component->parent = this;
         return *component;
     }
@@ -51,16 +49,18 @@ class Entity {
         return _valid;
     }
 
+    dm_memory_pool_impl(Entity);
+
    private:
-    std::map<uint32_t, ComponentBase*> components;
+    std::map<uint32_t, Component*> components;
 
     bool _valid;
 };
 
-dm_internal_register_type_name(Entity, "Entity");
+dm_internal_register_type(Entity)
 
-/* Event defining an added component */
-struct ComponentAddedEvent : Event {
+    /* Event defining an added component */
+    struct ComponentAddedEvent : Event {
     ComponentAddedEvent(const uint32_t type, const Entity* entity)
         : Event(EventType::COMPONENT_ADDED),
           component_type(type),

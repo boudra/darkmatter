@@ -18,8 +18,6 @@ class Texture;
 class ProgramShader;
 
 struct Sprite {
-    MEMORY_POOL(Sprite);
-
     Vec4i color;
     Rectangle crop;
     Vec3f position;
@@ -43,40 +41,42 @@ struct Sprite {
         // crop.size.x = -crop.size.x;
         scale.x *= -1.0f;
     }
+
+    dm_memory_pool(Sprite);
 };
 
-dm_start_component(Render2d);
+struct Render2d : public Component {
+    void set_transform(const Matrix4f& matrix);
 
-void set_transform(const Matrix4f& matrix);
+    Sprite& add_sprite(const std::string& name, const Vec3f& position,
+                       const Vec2f& size, const size_t& texture,
+                       const Vec4i& color = Color::White);
 
-Sprite& add_sprite(const std::string& name, const Vec3f& position,
-                   const Vec2f& size, const size_t& texture,
-                   const Vec4i& color = Color::White);
+    void update_bounding_box();
 
-void update_bounding_box();
+    Sprite& get_sprite(const std::string& name) { return *(sprites[name]); }
 
-Sprite& get_sprite(const std::string& name) { return *(sprites[name]); }
+    bool has_sprite(const std::string& name) {
+        return sprites.find(name) != sprites.end();
+    }
 
-bool has_sprite(const std::string& name) {
-    return sprites.find(name) != sprites.end();
-}
+    Render2d()
+        : transform(1.0f),
+          size(0.0f),
+          position(0.0f),
+          shadow(true),
+          billboard(true) {}
 
-Render2d()
-    : transform(1.0f),
-      size(0.0f),
-      position(0.0f),
-      shadow(true),
-      billboard(true) {}
+    Matrix4f transform;
+    Vec2f size;
+    Vec3f position;
+    bool shadow;
+    bool billboard;
 
-Matrix4f transform;
-Vec2f size;
-Vec3f position;
-bool shadow;
-bool billboard;
+    std::map<std::string, Sprite*> sprites;
 
-std::map<std::string, Sprite*> sprites;
-
-dm_end_component(Render2d);
+    dm_register_component(Render2d);
+};
 }
 
 #endif
