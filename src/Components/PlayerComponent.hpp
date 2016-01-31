@@ -6,22 +6,22 @@
 
 namespace dm {
 
-  class PlayerManager;
+class PlayerManager;
 
-  dm_start_component(PlayerComponent);
+dm_start_component(PlayerComponent);
 
-  PlayerComponent() : m_speed(.004f, 0.002f, 0.004f), m_direction(1.0f, 0.0f, 0.0f) {}
+PlayerComponent()
+    : m_speed(.004f, 0.002f, 0.004f), m_direction(1.0f, 0.0f, 0.0f) {}
 
-  const Vec3f& GetSpeed() const { return m_speed; }
-  void SetSpeed(const Vec3f& speed) { m_speed = speed; }
+const Vec3f &GetSpeed() const { return m_speed; }
+void SetSpeed(const Vec3f &speed) { m_speed = speed; }
 
-  friend PlayerManager;
+friend PlayerManager;
 
-  Vec3f m_speed;
-  Vec3f m_direction;
+Vec3f m_speed;
+Vec3f m_direction;
 
-  dm_end_component(PlayerComponent);
-
+dm_end_component(PlayerComponent);
 }
 
 #endif

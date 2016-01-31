@@ -7,52 +7,45 @@
 
 namespace dm {
 
-	class JsonReader
-	{
-	public:
+class JsonReader {
+   public:
+    JsonReader() {}
 
-		JsonReader() {}
+    JsonNode ParseValue();
+    Any ParseNumber();
+    std::string ParseString();
+    JsonNode ParseObject();
+    JsonNode ParseArray();
 
-		JsonNode ParseValue();
-		Any ParseNumber();
-		std::string ParseString();
-		JsonNode ParseObject();
-		JsonNode ParseArray();
+    void PrintError(const std::string &message);
 
-		void PrintError(const std::string& message);
+    inline const bool EndOfFile() const { return m_data >= m_end; }
 
-		inline const bool EndOfFile() const
-		{
-			return m_data >= m_end;
-		}
+    inline void SkipWhiteSpaces() {
+        while ((*m_data == ' ' || *m_data == '\n' || *m_data == '\r' ||
+                *m_data == '\t') &&
+               !EndOfFile())
+            m_data++;
+    }
 
-		inline void SkipWhiteSpaces()
-		{
-			while ((*m_data == ' ' || *m_data == '\n' || *m_data == '\r' || *m_data == '\t') && !EndOfFile()) m_data++;
-		}
+    inline void SkipUntil(const char &c) {
+        while (*m_data != c && !EndOfFile()) m_data++;
+    }
 
-		inline void SkipUntil(const char& c)
-		{
-			while (*m_data != c && !EndOfFile()) m_data++;
-		}
+    void PrettyPrint(JsonNode *node);
 
-		void PrettyPrint(JsonNode *node);
+    JsonNode Parse(const char *filename);
+    JsonNode Parse(std::ifstream &file);
 
-		JsonNode Parse(const char *filename);
-		JsonNode Parse(std::ifstream& file);
+    virtual ~JsonReader() {}
 
-		virtual ~JsonReader() {}
+   private:
+    size_t m_size;
 
-	private:
-
-		size_t m_size;
-
-		char *m_data;
-		char *m_start;
-		char *m_end;
-
-	};
-
+    char *m_data;
+    char *m_start;
+    char *m_end;
+};
 }
 
 #endif

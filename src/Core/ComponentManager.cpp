@@ -1,7 +1,3 @@
 #include "ComponentManager.hpp"
 
-
-namespace dm {
-   
-
-} /* namespace dm */
+namespace dm {} /* namespace dm */

@@ -6,17 +6,16 @@
 namespace dm {
 
 class Rectangle {
-  public:
-   Rectangle() : position(0, 0), size(0, 0) {}
-   Rectangle(Vec2f pos, Vec2f size) : position(pos), size(size) {}
+   public:
+    Rectangle() : position(0, 0), size(0, 0) {}
+    Rectangle(Vec2f pos, Vec2f size) : position(pos), size(size) {}
 
-   Vec2f position, size;
+    Vec2f position, size;
 
-   inline float top() const { return (position.y + size.y); }
-   inline float right() const { return (position.x + size.x); }
-   inline float left() const { return position.x; }
-   inline float bottom() const { return position.y; }
-
+    inline float top() const { return (position.y + size.y); }
+    inline float right() const { return (position.x + size.x); }
+    inline float left() const { return position.x; }
+    inline float bottom() const { return position.y; }
 };
 
 } /* namespace dm  */

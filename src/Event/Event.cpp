@@ -1,7 +1,3 @@
 #include "Event.hpp"
 
-namespace dm {
-
-    
-
-}
+namespace dm {}

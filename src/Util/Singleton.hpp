@@ -5,29 +5,22 @@ namespace dm {
 
 template <class ObjectType>
 class Singleton {
-public:
+   public:
+    static ObjectType &Instance() {
+        static ObjectType instance;
+        return instance;
+    }
 
-   static ObjectType& Instance()
-   {
-      static ObjectType instance;
-      return instance;
-   }
+    Singleton(const Singleton &) = delete;
+    Singleton(Singleton &&) = delete;
 
-   Singleton(const Singleton&) = delete;
-   Singleton(Singleton&&) = delete;
+    Singleton &operator=(const Singleton &) = delete;
+    Singleton &operator=(Singleton &&) = delete;
 
-   Singleton& operator=(const Singleton&) = delete;
-   Singleton& operator=(Singleton&&) = delete;
-
-private:
-
-   Singleton() {}
-   ~Singleton() {}
-  
+   private:
+    Singleton() {}
+    ~Singleton() {}
 };
-
-
 }
-
 
 #endif

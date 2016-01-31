@@ -20,16 +20,12 @@
 
 namespace dm {
 
-  Engine::Engine()
-    : m_window(nullptr),
-      m_exit(false) {
-  }
+Engine::Engine() : m_window(nullptr), m_exit(false) {}
 
-  Engine::~Engine() {}
+Engine::~Engine() {}
 
-  bool Engine::initialize() {
-
-    gettimeofday (&Log::begin, NULL);
+bool Engine::initialize() {
+    gettimeofday(&Log::begin, NULL);
 
     Log::info("Starting engine");
 
@@ -64,58 +60,52 @@ namespace dm {
 
     uint32_t initializedCount = 0;
 
-    auto initialize_system = [this, &initialized, &initializedCount](SystemBase* system){
+    auto initialize_system = [this, &initialized,
+                              &initializedCount](SystemBase *system) {
 
-      if (!system->initialize()) {
+        if (!system->initialize()) {
+            Log::error("Failed to initialize %s", system->name().c_str());
 
-	Log::error("Failed to initialize %s", system->name().c_str());
+            /* Cleanup */
+            delete system;
 
-	/* Cleanup */
-	delete system;
+            return false;
+        }
 
-	return false;
-      }
+        system->enable();
+        initialized[system->m_id] = true;
 
-      system->enable();
-      initialized[system->m_id] = true;
+        Log::ok("%s initialized", system->name().c_str());
 
-      Log::ok("%s initialized", system->name().c_str());
+        initializedCount++;
 
-      initializedCount++;
+        // this->manager<EntityManager>()->set_managed_components(system->m_managed,
+        // system);
 
-      // this->manager<EntityManager>()->set_managed_components(system->m_managed, system);
-
-      return true;
+        return true;
 
     };
 
-    while(initializedCount < m_systems.size())
-      {
+    while (initializedCount < m_systems.size()) {
+        for (SystemBase *system : m_systems) {
+            if (initialized[system->m_id] == true) continue;
 
-	for(SystemBase* system : m_systems) {
+            if (system->m_dependencies.empty()) {
+                initialize_system(system);
+            } else {
+                bool satisfied =
+                    std::all_of(system->m_dependencies.begin(),
+                                system->m_dependencies.end(),
+                                [&initialized](const uint32_t &dep) {
+                                    return initialized[dep];
+                                });
 
-	  if(initialized[system->m_id] == true) continue;
-         
-	  if(system->m_dependencies.empty()) {
-            initialize_system(system);
-	  }
-	  else
-	    {
-
-	      bool satisfied = std::all_of(system->m_dependencies.begin(), system->m_dependencies.end(), 
-					   [&initialized] (const uint32_t& dep) {
-					     return initialized[dep];
-					   });
-
-	      if(satisfied) {
-		initialize_system(system);
-	      }
-            
-	    }
-
-	}
-
-      }
+                if (satisfied) {
+                    initialize_system(system);
+                }
+            }
+        }
+    }
 
     this->system<InputSystem>()->set_window(m_window->handle());
 
@@ -124,55 +114,50 @@ namespace dm {
     m_dispatcher.subscribe(this, &Engine::quit, EventType::QUIT);
 
     return true;
-  }
+}
 
-  void Engine::quit(const QuitEvent& e) { m_exit = true; }
+void Engine::quit(const QuitEvent &e) { m_exit = true; }
 
-  void Engine::update() {
-    for (SystemBase* s : m_systems) {
-      if(s->enabled()) s->update();
+void Engine::update() {
+    for (SystemBase *s : m_systems) {
+        if (s->enabled()) s->update();
     }
-  }
+}
 
-  void Engine::render(float interpolation) {
-
+void Engine::render(float interpolation) {
     m_window->clear();
 
-    for (SystemBase* s : m_systems) {
-      s->render(interpolation);
+    for (SystemBase *s : m_systems) {
+        s->render(interpolation);
     }
 
     m_window->swap_buffers();
+}
 
-  }
-
-  bool Engine::start() {
-
+bool Engine::start() {
     uint32_t last = 0, current = 0, acumulator = 0, elapsed = 0;
     bool skipFrame = false;
 
     while (!m_exit) {
+        skipFrame = true;
+        current = SDL_GetTicks();
+        elapsed = current - last;
+        acumulator += elapsed;
+        last = current;
 
-      skipFrame = true;
-      current = SDL_GetTicks();
-      elapsed = current - last;
-      acumulator += elapsed;
-      last = current;
+        while (acumulator >= TICK_TIME) {
+            skipFrame = false;
+            this->update();
+            acumulator -= TICK_TIME;
+        }
 
-      while (acumulator >= TICK_TIME) {
-	skipFrame = false;
-	this->update();
-	acumulator -= TICK_TIME;
-      }
-
-      if(!skipFrame)  {
-	this->system<RenderSystem>()->set_frame_time(elapsed);
-	this->render(0.0f);
-      }
-
+        if (!skipFrame) {
+            this->system<RenderSystem>()->set_frame_time(elapsed);
+            this->render(0.0f);
+        }
     }
 
     return true;
-  }
+}
 
 } /* namespace dm */

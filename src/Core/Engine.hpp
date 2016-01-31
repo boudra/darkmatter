@@ -14,101 +14,90 @@ namespace dm {
 class Window;
 
 class Engine {
-  public:
+   public:
+    Engine();
+    ~Engine();
 
-   Engine();
-   ~Engine();
+    bool initialize();
+    bool start();
 
-   bool initialize();
-   bool start();
-      
-   void update();
-   void render(float interpolation);
+    void update();
+    void render(float interpolation);
 
-   Window* window();
+    Window *window();
 
-   void quit(const QuitEvent& e);
+    void quit(const QuitEvent &e);
 
-   template <class SystemType>
-   SystemType* system();
+    template <class SystemType>
+    SystemType *system();
 
-   template <class ManagerType>
-   ManagerType* manager();
+    template <class ManagerType>
+    ManagerType *manager();
 
-  private:
+   private:
+    template <class SystemType>
+    uint32_t add_system();
 
-   template <class SystemType>
-   uint32_t add_system();
+    template <class ManagerType>
+    bool load_manager();
 
-   template <class ManagerType>
-   bool load_manager();
+    EventDispatcher m_dispatcher;
 
-   EventDispatcher m_dispatcher;
+    Window *m_window;
 
-   Window* m_window;
+    bool m_exit;
 
-   bool m_exit;
-
-   std::vector<SystemBase*> m_systems;
-   std::vector<ManagerBase*> m_managers;
-
+    std::vector<SystemBase *> m_systems;
+    std::vector<ManagerBase *> m_managers;
 };
 
-inline Window* Engine::window() { return m_window; }
+inline Window *Engine::window() { return m_window; }
 
 template <class SystemType>
 inline uint32_t Engine::add_system() {
+    const uint32_t systemId = SYSTEM(SystemType);
+    auto *system = new SystemType();
 
-   const uint32_t systemId = SYSTEM(SystemType);
-   auto* system = new SystemType();
+    if (m_systems.size() <= systemId) {
+        m_systems.resize(systemId + 1);
+    }
 
-   if(m_systems.size() <= systemId)
-   {
-      m_systems.resize(systemId + 1);
-   }
+    system->m_id = systemId;
 
-   system->m_id = systemId;
+    m_systems[systemId] = static_cast<SystemBase *>(system);
 
-   m_systems[systemId] = static_cast<SystemBase*>(system);
-   
-   return systemId;
+    return systemId;
 }
 
 template <class ManagerType>
 inline bool Engine::load_manager() {
+    const ManagerId managerId = ManagerType::id();
+    auto *manager = new ManagerType();
 
-   const ManagerId managerId = ManagerType::id();
-   auto* manager = new ManagerType();
+    if (m_managers.size() <= managerId) {
+        m_managers.resize(managerId + 1);
+    }
 
-   if(m_managers.size() <= managerId)
-   {
-      m_managers.resize(managerId + 1);
-   }
+    m_managers[managerId] = static_cast<ManagerBase *>(manager);
+    manager->initialize();
 
-   m_managers[managerId] = static_cast<ManagerBase*>(manager);
-   manager->initialize();
-
-   return true;
+    return true;
 }
 template <class SystemType>
-inline SystemType* Engine::system() {
-   assert(m_systems.size() > SYSTEM(SystemType)); 
-   return static_cast<SystemType*>(m_systems[SYSTEM(SystemType)]);
+inline SystemType *Engine::system() {
+    assert(m_systems.size() > SYSTEM(SystemType));
+    return static_cast<SystemType *>(m_systems[SYSTEM(SystemType)]);
 }
 
 template <class ManagerType>
-inline ManagerType* Engine::manager() {
-   assert(m_managers.size() > ManagerType::id()); 
-   return static_cast<ManagerType*>(
-       m_managers[ManagerType::id()]);
+inline ManagerType *Engine::manager() {
+    assert(m_managers.size() > ManagerType::id());
+    return static_cast<ManagerType *>(m_managers[ManagerType::id()]);
 }
 
-#define GET_SYSTEM(TYPE) \
-   s_engine->system<TYPE>()
+#define GET_SYSTEM(TYPE) s_engine->system<TYPE>()
 
-#define GET_MANAGER(TYPE) \
-   s_engine->manager<TYPE>()
-
+#define GET_MANAGER(TYPE) s_engine->manager<TYPE>()
 }
 
 #endif

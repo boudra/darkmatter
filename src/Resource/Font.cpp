@@ -14,99 +14,98 @@ FT_Library ft;
 bool m_ftinitialised = false;
 
 Font::Font() {
-   if (!m_ftinitialised) {
-      if (FT_Init_FreeType(&ft)) {
-	Log::error("Error initializing FreeType2");
-      }
-   }
+    if (!m_ftinitialised) {
+        if (FT_Init_FreeType(&ft)) {
+            Log::error("Error initializing FreeType2");
+        }
+    }
 }
 
 Font::~Font() {}
 
-bool Font::load(Texture& texture, const char* name, const int size) {
+bool Font::load(Texture &texture, const char *name, const int size) {
+    FT_Face face;
 
-   FT_Face face;
+    int atlaswidth = 0, atlasheight = 0;
 
-   int atlaswidth = 0, atlasheight = 0;
+    m_glyphs.resize(130);
 
-   m_glyphs.resize(130);
+    if (FT_New_Face(ft, name, 0, &face)) {
+        return false;
+    }
 
-   if (FT_New_Face(ft, name, 0, &face)) {
-      return false;
-   }
+    FT_Set_Pixel_Sizes(face, 0, size);
 
-   FT_Set_Pixel_Sizes(face, 0, size);
+    FT_GlyphSlot g = face->glyph;
 
-   FT_GlyphSlot g = face->glyph;
+    for (uint32_t i = 32; i < 128; ++i) {
+        if (FT_Load_Char(face, i, FT_LOAD_RENDER)) {
+            Log::error("Failed to load character %c", i);
+            continue;
+        }
 
-   for (uint32_t i = 32; i < 128; ++i) {
+        atlaswidth += g->bitmap.width;
+        atlasheight = dm::max(atlasheight, (int)g->bitmap.rows);
+    }
 
-      if (FT_Load_Char(face, i, FT_LOAD_RENDER)) {
-	Log::error("Failed to load character %c", i);
-         continue;
-      }
+    atlaswidth += (128 - 32);
 
-      atlaswidth += g->bitmap.width;
-      atlasheight = dm::max(atlasheight, (int)g->bitmap.rows);
-   }
+    texture.set_size(Vec2i(atlaswidth, atlasheight));
+    texture.set_format(Texture::Format::Alpha);
+    texture.set_filter(Texture::Filter::Nearest, Texture::Filter::Nearest);
+    texture.set_transparent(true);
+    texture.upload();
 
-   atlaswidth += (128 - 32);
+    texture.bind();
 
-   texture.set_size(Vec2i(atlaswidth, atlasheight));
-   texture.set_format(Texture::Format::Alpha);
-   texture.set_filter(Texture::Filter::Nearest, Texture::Filter::Nearest);
-   texture.set_transparent(true);
-   texture.upload();
+    texture.setup();
 
-   texture.bind();
+    unsigned char *data = new unsigned char[atlaswidth * atlasheight];
+    memset(data, 0, atlaswidth * atlasheight);
+    texture.set_data(data);
 
-   texture.setup();
+    delete data;
 
-   unsigned char* data = new unsigned char[atlaswidth * atlasheight];
-   memset(data, 0, atlaswidth * atlasheight);
-   texture.set_data(data);
+    int x = 0;
 
-   delete data;
+    for (uint32_t i = 32; i < 128; ++i) {
+        if (FT_Load_Char(face, i, FT_LOAD_RENDER)) continue;
 
-   int x = 0;
+        texture.sub_data(g->bitmap.buffer, Vec2i(x, 0),
+                         Vec2i(g->bitmap.width, g->bitmap.rows));
 
-   for (uint32_t i = 32; i < 128; ++i) {
-      if (FT_Load_Char(face, i, FT_LOAD_RENDER))
-         continue;
+        Glyph info;
 
-      texture.sub_data(g->bitmap.buffer,
-                        Vec2i(x, 0),
-                        Vec2i(g->bitmap.width, g->bitmap.rows));
+        /* Characters are inverted in the texture */
+        info.crop.position =
+            Vec2f(x / (float)atlaswidth,
+                  ((float)(g->bitmap.rows + 1) / (float)atlasheight));
+        info.crop.size =
+            Vec2f((float)g->bitmap.width / (float)atlaswidth,
+                  -(((float)g->bitmap.rows + 1) / (float)atlasheight));
 
-      Glyph info;
+        info.vertices.position =
+            Vec2f((float)g->bitmap_left,
+                  (float)g->bitmap_top - (float)g->bitmap.rows);
 
-      /* Characters are inverted in the texture */
-      info.crop.position = Vec2f(x / (float)atlaswidth,
-                                 ((float)(g->bitmap.rows+1) / (float)atlasheight));
-      info.crop.size = Vec2f((float)g->bitmap.width / (float)atlaswidth,
-                             -(((float)g->bitmap.rows+1) / (float)atlasheight));
+        info.vertices.size =
+            Vec2f((float)g->bitmap.width, (float)g->bitmap.rows);
+        info.kerning.x = (float)(g->advance.x >> 6);
+        info.kerning.y = (float)(g->advance.y >> 6);
 
-      info.vertices.position = Vec2f(
-          (float)g->bitmap_left, (float)g->bitmap_top - (float)g->bitmap.rows);
+        m_glyphs[i] = info;
 
-      info.vertices.size = Vec2f((float)g->bitmap.width, (float)g->bitmap.rows);
-      info.kerning.x = (float)(g->advance.x >> 6);
-      info.kerning.y = (float)(g->advance.y >> 6);
+        /* 1px padding to remove artifacts between characters */
+        x += g->bitmap.width + 1;
+    }
 
-      m_glyphs[i] = info;
+    m_size = size;
 
-      /* 1px padding to remove artifacts between characters */
-      x += g->bitmap.width + 1;
-   }
+    m_texture = texture.id();
 
-   m_size = size;
+    texture.release();
 
-   m_texture = texture.id();
-
-   texture.release();
-
-   return true;
+    return true;
 }
-
 
 } /* game */

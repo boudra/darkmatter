@@ -9,22 +9,22 @@
 namespace dm {
 
 class Prototype {
-  public:
-   Prototype();
-   ~Prototype();
+   public:
+    Prototype();
+    ~Prototype();
 
-   template <class ObjectType>
-   ObjectType Create(std::string name) {
-      return m_prototypes[name].Cast<ObjectType>();
-   }
+    template <class ObjectType>
+    ObjectType Create(std::string name) {
+        return m_prototypes[name].Cast<ObjectType>();
+    }
 
-  private:
-   std::map<std::string, Any> m_prototypes;
+   private:
+    std::map<std::string, Any> m_prototypes;
 };
 
 template <>
 Any Prototype::Create(std::string name) {
-   return m_prototypes[name];
+    return m_prototypes[name];
 }
 
 } /* namespace dm */

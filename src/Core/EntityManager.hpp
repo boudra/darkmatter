@@ -10,9 +10,6 @@
 
 #include <algorithm>
 
-namespace dm {
-
-
-}
+namespace dm {}
 
 #endif

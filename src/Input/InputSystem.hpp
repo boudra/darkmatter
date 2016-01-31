@@ -9,28 +9,23 @@ struct SDL_Window;
 
 namespace dm {
 
-    class InputSystem : public SystemBase
-    {
-    public:
+class InputSystem : public SystemBase {
+   public:
+    InputSystem() : SystemBase("Input") {}
+    ~InputSystem() {}
 
-        InputSystem() : SystemBase("Input") {}
-        ~InputSystem() {}
+    void render(float interpolation);
+    void update();
 
-        void render(float interpolation);
-        void update();
+    bool initialize();
 
-        bool initialize();
+    void set_window(SDL_Window *window);
 
-        void set_window(SDL_Window* window);
-
-    private:
-
-        SDL_Window* m_window;
-        Vec2i m_window_size;
-        Vec2f m_mouse_transform;
-
-    };
-
+   private:
+    SDL_Window *m_window;
+    Vec2i m_window_size;
+    Vec2f m_mouse_transform;
+};
 }
 
 #endif

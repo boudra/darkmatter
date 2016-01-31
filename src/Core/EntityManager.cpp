@@ -1,5 +1,3 @@
 #include "EntityManager.hpp"
 
-namespace dm {
-
-}
+namespace dm {}

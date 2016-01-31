@@ -1,5 +1,3 @@
 #include "Event/EventHandler.hpp"
 
-namespace dm
-{
-}
+namespace dm {}

@@ -2,6 +2,6 @@
 
 namespace dm {
 
-ResourceManager * Deserializer::m_resource_manager = nullptr;
-   
+ResourceManager *Deserializer::m_resource_manager = nullptr;
+
 } /* namespace dm */

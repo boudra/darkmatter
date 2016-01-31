@@ -8,18 +8,16 @@
 namespace dm {
 
 class PhysicsSystem : public SystemBase {
-  public:
+   public:
+    PhysicsSystem();
+    ~PhysicsSystem();
 
-   PhysicsSystem();
-   ~PhysicsSystem();
+    void render(float interpolation);
+    void update();
 
-   void render(float interpolation);
-   void update();
+    bool initialize();
 
-   bool initialize();
-
-  private:
-
+   private:
 };
 
 } /* namespace dm */

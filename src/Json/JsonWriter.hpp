@@ -7,40 +7,31 @@
 
 namespace dm {
 
-	class JsonWriter
-	{
-	public:
+class JsonWriter {
+   public:
+    JsonWriter() : m_printlevel(0), m_identWidth(2) {}
 
-		JsonWriter() : m_printlevel(0), m_identWidth(2) {}
+    ~JsonWriter() { m_buffer.clear(); }
 
-		~JsonWriter()
-		{
-			m_buffer.clear();
-		}
+    std::string PrettyPrint(JsonNode &root) {
+        PrintNode(root);
+        return m_buffer.str();
+    }
 
-		std::string PrettyPrint(JsonNode& root)
-		{
-			PrintNode(root);
-			return m_buffer.str();
-		}
+    void PrettyPrint(JsonNode &root, std::ostream &out) {
+        this->PrintNode(root);
+        out << m_buffer.str() << '\n';
+        ;
+    }
 
-		void PrettyPrint(JsonNode& root, std::ostream& out)
-		{
-			this->PrintNode(root);
-			out << m_buffer.str() << '\n';;
-		}
+   private:
+    void PrintNode(JsonNode &node);
 
-	private:
+    unsigned int m_printlevel;
+    unsigned int m_identWidth;
 
-		void PrintNode(JsonNode& node);
-
-		unsigned int m_printlevel;
-		unsigned int m_identWidth;
-
-		std::stringstream m_buffer;
-
-	};
-
+    std::stringstream m_buffer;
+};
 }
 
 #endif

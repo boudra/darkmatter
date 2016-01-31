@@ -9,8 +9,7 @@
 
 #include "Core/Entity.hpp"
 
-#define SYSTEM(TYPE) \
-   dm::SystemId<TYPE>::id()
+#define SYSTEM(TYPE) dm::SystemId<TYPE>::id()
 
 namespace dm {
 
@@ -19,62 +18,55 @@ class Engine;
 class EventDispatcher;
 
 class SystemBase {
+   public:
+    SystemBase(const std::string &name) : SystemBase(name, {}, {}) {}
 
-  public:
+    SystemBase(const std::string &name,
+               std::initializer_list<uint32_t> dependencies,
+               std::initializer_list<uint32_t> managed)
+        : m_enabled(false),
+          m_name(name),
+          m_dependencies(dependencies),
+          m_managed(managed) {}
 
-   SystemBase(const std::string& name) : SystemBase(name, {}, {}) {}
+    virtual ~SystemBase() {}
 
-   SystemBase(const std::string& name,
-              std::initializer_list<uint32_t> dependencies,
-              std::initializer_list<uint32_t> managed) : 
-      m_enabled(false),
-      m_name(name),
-      m_dependencies(dependencies),
-      m_managed(managed) {}
+    const bool enabled() const;
 
-   virtual ~SystemBase() {}
+    void disable();
+    void enable();
 
-   const bool enabled() const;
+    virtual void update() = 0;
+    virtual void render(float interpolation) = 0;
+    virtual bool initialize() = 0;
+    virtual void component_added(const uint32_t componentType, Entity e) {}
 
-   void disable();
-   void enable();
+    const std::string &name() { return m_name; }
 
-   virtual void update() = 0;
-   virtual void render(float interpolation) = 0;
-   virtual bool initialize() = 0;
-   virtual void component_added(const uint32_t componentType, Entity e) {}
-   
-   const std::string& name() {
-      return m_name;
-   }
+   protected:
+    static EntityManager *s_entities;
+    static Engine *s_engine;
+    static EventDispatcher *s_dispatcher;
 
-  protected:
+    bool m_enabled;
 
-   static EntityManager* s_entities;
-   static Engine* s_engine;
-   static EventDispatcher* s_dispatcher;
+    std::string m_name;
 
-   bool m_enabled;
+   private:
+    std::vector<uint32_t> m_dependencies;
+    std::vector<uint32_t> m_managed;
 
-   std::string m_name;
+    uint32_t m_id;
 
-  private:
+    template <class SystemType>
+    friend class SystemId;
 
-   std::vector<uint32_t> m_dependencies;
-   std::vector<uint32_t> m_managed;
+    friend class Engine;
 
-   uint32_t m_id;
-
-   template <class SystemType>
-   friend class SystemId;
-
-   friend class Engine;
-
-   static uint32_t& counter() {
-      static uint32_t counter = 0;
-      return counter;
-   }
-
+    static uint32_t &counter() {
+        static uint32_t counter = 0;
+        return counter;
+    }
 };
 
 inline const bool SystemBase::enabled() const { return m_enabled; }
@@ -84,15 +76,12 @@ inline void SystemBase::disable() { m_enabled = false; }
 
 template <class SystemType>
 class SystemId {
-  public:
-
-   static uint32_t id() {
-      static uint32_t id = SystemBase::counter()++;
-      return id;
-   }
-
+   public:
+    static uint32_t id() {
+        static uint32_t id = SystemBase::counter()++;
+        return id;
+    }
 };
-
 }
 
 #endif

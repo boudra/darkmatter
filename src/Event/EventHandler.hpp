@@ -8,7 +8,6 @@
 
 namespace dm {
 
-
 /*
 template <class DerivedType>
 class EventHandler {

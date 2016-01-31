@@ -3,8 +3,4 @@
 #include <SDL.h>
 #include <iostream>
 
-namespace dm {
-
-
-
-}
+namespace dm {}
