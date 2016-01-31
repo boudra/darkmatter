@@ -19,30 +19,26 @@
 #define dm_internal_register_type_name(type, name_)                      \
     template <>                                                          \
     struct global_type_info<dm_type_filter(type)> {                      \
-        static constexpr const char* name = name_;                       \
-        static uint32_t id() {                                           \
-            static uint32_t current_id = type_info_counter::counter()++; \
-            return current_id;                                           \
+        static constexpr const char* name() { return name_; }                      \
+        static constexpr uint32_t id() {                                           \
+            return const_hash(name_, __LINE__); \
         }                                                                \
     };
 
 #define dm_register_type(type) dm_register_type_name(type, #type)
 #define dm_type_id(type) dm_type_get(type)::id()
-#define dm_type_name(type) dm_type_get(type)::name
+#define dm_type_name(type) dm_type_get(type)::name()
 #define dm_type_info(type) TypeInfo(dm_type_id(type), dm_type_name(type))
 
 namespace dm {
 
-struct type_info_counter {
-    static uint32_t& counter() {
-        static uint32_t c = 1;
-        return c;
-    }
-};
+uint32_t constexpr const_hash(char const* string, const uint32_t salt) {
+    return *string ? static_cast<uint32_t>(*string) * const_hash(string + 1, salt) : salt;
+}
 
 template <typename type>
 struct global_type_info {
-    static constexpr const char* name = "unknown";
+    static constexpr const char* name() { return "unknown"; }
     static constexpr uint32_t id() { return 0; }
 };
 
@@ -86,8 +82,12 @@ class TypeInfo {
 };
 }
 
-dm_register_type(int) dm_register_type(char) dm_register_type(float)
-    dm_register_type(double) dm_register_type(long) dm_register_type(bool)
-        dm_register_type_name(std::nullptr_t, "null")
+dm_register_type(int);
+dm_register_type(char);
+dm_register_type(float);
+dm_register_type(double);
+dm_register_type(long);
+dm_register_type(bool);
+dm_register_type_name(std::nullptr_t, "null");
 
 #endif

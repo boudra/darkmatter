@@ -38,11 +38,11 @@ class Log {
 
     template <typename... arg_types>
     static void ok(const char* fmt, arg_types&&... args) {
-        meta("OK");
+        meta("ok");
         fmt::printf("\x1B[32m");
         fmt::printf(fmt, std::forward<arg_types>(args)...);
         fmt::printf("\x1B[0m");
-        printf("\n");
+        fmt::printf("\n");
     }
 
     template <typename... arg_types>

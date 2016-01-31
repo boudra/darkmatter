@@ -118,10 +118,12 @@ bool Engine::initialize() {
     return true;
 }
 
-void Engine::quit(const QuitEvent& e) { m_exit = true; }
+void Engine::quit(const QuitEvent& e) {
+    Log::info("Quit");
+    m_exit = true;
+}
 
 void Engine::update() {
-    uint32_t start = SDL_GetTicks();
     std::future<void> futures[30];
     for (size_t i = 0; i < m_systems.size(); ++i) {
         SystemBase* s = m_systems[i];

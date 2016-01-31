@@ -135,8 +135,7 @@ class MemoryPool {
     }
 
     static std::mutex& mutex() {
-        static MemoryPool<object_type, block_size> instance_;
-        return instance_.mut_;
+        return MemoryPool<object_type, block_size>::instance().mut_;
     }
 
     object_type* allocate_block() {
@@ -165,9 +164,13 @@ class MemoryPool {
     }
 
     void cleanup() {
-        Log::progress("debug", "Cleaning up the memory pool");
+        Log::progress("debug", "Cleaning up the memory pool for %s",
+                dm_type_name(object_type));
 
+        assert(dm_type_name(object_type) != dm_type_name(size_t));
         Block* block = first_block_;
+
+        assert(first_block_ != nullptr);
 
         for (auto& object : *this) {
             object.~object_type();
@@ -178,10 +181,11 @@ class MemoryPool {
             Block* next = block->next_;
             block_allocator::deallocate(block);
             block = next;
-
         } while (block != first_block_);
 
         assert(size_ == 0);
+
+        first_block_ = nullptr;
 
         Log::result(Log::Result::OK);
     }
@@ -203,6 +207,8 @@ class MemoryPool {
             block = block->next_;
         } while (block != first_block_);
 
+        assert(!"Object not in pool");
+
         return nullptr;
     }
 
@@ -214,8 +220,10 @@ class MemoryPool {
 
        public:
         Iterator(MemoryPool<object_type>& pool, object_type* pos)
-            : current_(pos), pool_(pool) {
-            current_block_ = pool_.get_block(current_);
+            : current_(pos), current_block_(pool.last_block_), pool_(pool) {
+            if(current_ != pool.end_ptr()) {
+                current_block_ = pool_.get_block(current_);
+            }
         }
 
         void reset() {
