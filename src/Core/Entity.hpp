@@ -27,7 +27,7 @@ namespace dm {
     ComponentType& assign() {
       ComponentType * component = new ComponentType();
       components[COMPONENT(ComponentType)] = static_cast<ComponentBase*>(component);
-      component->parent = this; 
+      component->parent = this;
       return * component;
     }
 
@@ -42,6 +42,8 @@ namespace dm {
       return components.find(COMPONENT(ComponentType)) != components.end();
     }
 
+    bool load_from(const char *);
+
     void reset() {
     }
 
@@ -53,7 +55,7 @@ namespace dm {
   private:
 
     std::map<uint32_t, ComponentBase*> components;
-    
+
     bool _valid;
 
   };

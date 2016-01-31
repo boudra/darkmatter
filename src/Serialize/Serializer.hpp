@@ -11,7 +11,7 @@
 #include "Resource/ResourceManager.hpp"
 
 namespace dm {
-   
+
    class Deserializer {
    public:
 
@@ -59,7 +59,7 @@ namespace dm {
                   ));
                }
                break;
-               
+
                default:
                   auto& position = node.second["position"];
                   info.frames.push_back(new AnimationFrame<Vec3f>(
@@ -138,10 +138,10 @@ namespace dm {
 
       bool deserialize(JsonNode& root, Render2d& render)
       {
-         
+
          render.shadow = root["shadow"].Cast<bool>();
          render.billboard = root["billboard"].Cast<bool>();
-            
+
          for(auto& node : root["sprites"].Children())
          {
             auto& sprite = node.second;
