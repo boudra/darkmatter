@@ -101,18 +101,18 @@ Texture::Texture()
 
 Texture::~Texture() {}
 
-bool Texture::load(const char *filename, Filter filter, Wrap wrap) {
+bool Texture::load(const char* filename, Filter filter, Wrap wrap) {
     return this->load(filename, filter, filter, wrap, wrap);
 }
 
-bool Texture::load(const char *filename, Filter filter_min, Filter filter_mag,
+bool Texture::load(const char* filename, Filter filter_min, Filter filter_mag,
                    Wrap wrap_x, Wrap wrap_y) {
     m_filter_min = filter_min;
     m_filter_mag = filter_mag;
     m_wrap_x = wrap_x;
     m_wrap_y = wrap_y;
 
-    unsigned char *data = nullptr;
+    unsigned char* data = nullptr;
     unsigned int ilid;
 
     if (!is_devil_initialised) {
@@ -159,7 +159,7 @@ bool Texture::load(const char *filename, Filter filter_min, Filter filter_mag,
     return true;
 }
 
-void Texture::set_data(unsigned char *data) {
+void Texture::set_data(unsigned char* data) {
     unsigned int format = to_opengl_format(m_format);
     size_t bytes = m_bpp / 8;
 
@@ -183,7 +183,7 @@ void Texture::set_data(unsigned char *data) {
     }
 }
 
-void Texture::sub_data(unsigned char *data, Vec2i position, Vec2i size) const {
+void Texture::sub_data(unsigned char* data, Vec2i position, Vec2i size) const {
     unsigned int format = to_opengl_format(m_format);
 
     assert(position + size < m_size && m_bound);

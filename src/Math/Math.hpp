@@ -9,12 +9,12 @@
 namespace dm {
 
 template <class T>
-const T &max(const T &a, const T &b) {
+const T& max(const T& a, const T& b) {
     return (a < b) ? b : a;
 }
 
 template <typename T>
-T clamp(const T &n, const T &lower, const T &upper) {
+T clamp(const T& n, const T& lower, const T& upper) {
     return std::max(lower, std::min(n, upper));
 }
 }

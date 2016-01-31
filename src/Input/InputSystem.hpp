@@ -19,10 +19,10 @@ class InputSystem : public SystemBase {
 
     bool initialize();
 
-    void set_window(SDL_Window *window);
+    void set_window(SDL_Window* window);
 
    private:
-    SDL_Window *m_window;
+    SDL_Window* m_window;
     Vec2i m_window_size;
     Vec2f m_mouse_transform;
 };

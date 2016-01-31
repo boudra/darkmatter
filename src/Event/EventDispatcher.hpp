@@ -11,9 +11,9 @@
 
 namespace dm {
 
-typedef std::function<void(const Event &)> ListenerFunc;
+typedef std::function<void(const Event&)> ListenerFunc;
 
-using ListenerVector = std::vector<std::function<void(const Event &)>>;
+using ListenerVector = std::vector<std::function<void(const Event&)>>;
 
 class EventDispatcher {
    public:
@@ -21,10 +21,10 @@ class EventDispatcher {
     ~EventDispatcher() {}
 
     template <class HandlerType, class EventValueType = Event>
-    size_t subscribe(HandlerType *handler,
-                     void (HandlerType::*func)(const EventValueType &),
+    size_t subscribe(HandlerType* handler,
+                     void (HandlerType::*func)(const EventValueType&),
                      EventType type) {
-        using realfunc = void (HandlerType::*)(const Event &);
+        using realfunc = void (HandlerType::*)(const Event&);
 
         realfunc real = reinterpret_cast<realfunc>(func);
 
@@ -54,8 +54,8 @@ class EventDispatcher {
     }
 
     template <class EventValueType>
-    void send_event(const EventValueType &e) {
-        for (auto &handler : m_listeners[e.type]) {
+    void send_event(const EventValueType& e) {
+        for (auto& handler : m_listeners[e.type]) {
             handler(e);
         }
     }

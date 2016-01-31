@@ -19,7 +19,7 @@
 #define dm_internal_register_type_name(type, name_)                      \
     template <>                                                          \
     struct global_type_info<dm_type_filter(type)> {                      \
-        static constexpr const char *name = name_;                       \
+        static constexpr const char* name = name_;                       \
         static uint32_t id() {                                           \
             static uint32_t current_id = type_info_counter::counter()++; \
             return current_id;                                           \
@@ -34,7 +34,7 @@
 namespace dm {
 
 struct type_info_counter {
-    static uint32_t &counter() {
+    static uint32_t& counter() {
         static uint32_t c = 1;
         return c;
     }
@@ -42,7 +42,7 @@ struct type_info_counter {
 
 template <typename type>
 struct global_type_info {
-    static constexpr const char *name = "unknown";
+    static constexpr const char* name = "unknown";
     static constexpr uint32_t id() { return 0; }
 };
 
@@ -57,23 +57,23 @@ class TypeInfo {
 
     ~TypeInfo() {}
 
-    const std::string &name() const { return m_name; }
+    const std::string& name() const { return m_name; }
 
     uint32_t id() const { return m_id; }
 
-    bool operator==(const TypeInfo &typeinfo) const {
+    bool operator==(const TypeInfo& typeinfo) const {
         return m_id == typeinfo.m_id;
     }
 
-    bool operator!=(const TypeInfo &typeinfo) const {
+    bool operator!=(const TypeInfo& typeinfo) const {
         return m_id != typeinfo.m_id;
     }
 
-    bool operator==(const std::string &str) const { return m_name == str; }
+    bool operator==(const std::string& str) const { return m_name == str; }
 
-    bool operator!=(const std::string &str) const { return m_name != str; }
+    bool operator!=(const std::string& str) const { return m_name != str; }
 
-    bool is(const std::string &str) const { return m_name == str; }
+    bool is(const std::string& str) const { return m_name == str; }
 
     template <typename type>
     inline bool is() const {

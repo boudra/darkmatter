@@ -18,13 +18,13 @@ class Deserializer {
     ~Deserializer() {}
 
     template <typename value_type>
-    bool deserialize(const std::string &filename, value_type &value) {
+    bool deserialize(const std::string& filename, value_type& value) {
         JsonReader reader;
         JsonNode root = reader.Parse(filename.c_str());
         return deserialize(root, value);
     }
 
-    bool deserialize(JsonNode &anim, AnimationInfo &info) {
+    bool deserialize(JsonNode& anim, AnimationInfo& info) {
         info.name = anim["name"].Cast<std::string>();
         info.type = anim["type"].Cast<AnimationType>();
 
@@ -32,17 +32,17 @@ class Deserializer {
             info.data = anim["sprite"].Cast<std::string>();
         }
 
-        for (auto &node : anim["frames"].Children()) {
+        for (auto& node : anim["frames"].Children()) {
             switch (info.type) {
                 case AnimationType::SpriteTexture: {
-                    auto &frame = node.second["frame"];
+                    auto& frame = node.second["frame"];
                     info.frames.push_back(new AnimationFrame<Vec2i>(
                         (float)node.second["time"].Cast<double>() * 1000.0f,
                         deserialize_vec2i(frame)));
                 } break;
 
                 case AnimationType::SpriteScale: {
-                    auto &position = node.second["scale"];
+                    auto& position = node.second["scale"];
                     Vec2f scale = deserialize_vec2f(position);
                     info.frames.push_back(new AnimationFrame<Vec3f>(
                         (float)node.second["time"].Cast<double>() * 1000.0f,
@@ -50,7 +50,7 @@ class Deserializer {
                 } break;
 
                 default:
-                    auto &position = node.second["position"];
+                    auto& position = node.second["position"];
                     info.frames.push_back(new AnimationFrame<Vec3f>(
                         (float)node.second["time"].Cast<double>() * 1000.0f,
                         deserialize_vec3f(position)));
@@ -61,13 +61,13 @@ class Deserializer {
         return true;
     }
 
-    bool deserialize(JsonNode &root, Entity &e) {
-        JsonNode &components = root["components"];
+    bool deserialize(JsonNode& root, Entity& e) {
+        JsonNode& components = root["components"];
 
         Log::debug("Deserializing entity %s",
                    root["name"].Cast<std::string>().c_str());
 
-        for (auto &node : components.Children()) {
+        for (auto& node : components.Children()) {
             Log::debug("Deserializing component %s", node.first.c_str());
 
             if (node.first == "render") {
@@ -89,9 +89,9 @@ class Deserializer {
         return true;
     }
 
-    bool deserialize(JsonNode &root, AnimationComponent &animation) {
-        for (auto &node : root.Children()) {
-            auto &animation_info = node.second;
+    bool deserialize(JsonNode& root, AnimationComponent& animation) {
+        for (auto& node : root.Children()) {
+            auto& animation_info = node.second;
             if (node.first == "empty") return true;
             animation.animate(node.first,
                               (float)animation_info["speed"].Cast<double>(),
@@ -100,22 +100,22 @@ class Deserializer {
         return true;
     }
 
-    bool deserialize(JsonNode &root, BodyComponent &body) {
+    bool deserialize(JsonNode& root, BodyComponent& body) {
         body.position = deserialize_vec2i(root["position"]);
         return true;
     }
 
-    bool deserialize(JsonNode &root, Render2d &render) {
+    bool deserialize(JsonNode& root, Render2d& render) {
         render.shadow = root["shadow"].Cast<bool>();
         render.billboard = root["billboard"].Cast<bool>();
 
-        for (auto &node : root["sprites"].Children()) {
-            auto &sprite = node.second;
-            Texture *texture = m_resource_manager->get_texture(
+        for (auto& node : root["sprites"].Children()) {
+            auto& sprite = node.second;
+            Texture* texture = m_resource_manager->get_texture(
                 m_resource_manager->load_texture(
                     "data/" + sprite["texture"].Cast<std::string>()));
 
-            Sprite &new_sprite = render.add_sprite(
+            Sprite& new_sprite = render.add_sprite(
                 node.first, Vec3f{deserialize_vec2f(sprite["position"]),
                                   (float)sprite["depth"].Cast<int>() / 1000.0f},
                 deserialize_vec2f(sprite["size"]), texture->id());
@@ -137,27 +137,27 @@ class Deserializer {
         return true;
     }
 
-    bool deserialize(JsonNode &root, PhysicsComponent &physics) {
+    bool deserialize(JsonNode& root, PhysicsComponent& physics) {
         physics.set_size(deserialize_vec3f(root["size"]) * TILE_SIZE);
         return true;
     }
 
-    Vec3f deserialize_vec3f(JsonNode &array) {
+    Vec3f deserialize_vec3f(JsonNode& array) {
         return {(float)array[0].Cast<double>(), (float)array[1].Cast<double>(),
                 (float)array[2].Cast<double>()};
     }
 
-    Vec2f deserialize_vec2f(JsonNode &array) {
+    Vec2f deserialize_vec2f(JsonNode& array) {
         return {(float)array[0].Cast<double>(), (float)array[1].Cast<double>()};
     }
 
-    Vec2i deserialize_vec2i(JsonNode &array) {
+    Vec2i deserialize_vec2i(JsonNode& array) {
         return {array[0].Cast<int>(), array[1].Cast<int>()};
     }
 
    private:
     friend Engine;
-    static ResourceManager *m_resource_manager;
+    static ResourceManager* m_resource_manager;
 };
 
 } /* namespace dm */

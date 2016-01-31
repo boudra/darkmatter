@@ -12,18 +12,18 @@ class TileMap {
    public:
     TileMap() : TileMap(50, 50) {}
 
-    TileMap(const int &width, const int &height)
+    TileMap(const int& width, const int& height)
         : m_width(width), m_height(height) {
         m_tiles.resize(width * height * 2);
     }
 
     ~TileMap() {}
 
-    Tile &operator()(const int &x, const int &y) {
+    Tile& operator()(const int& x, const int& y) {
         return m_tiles[(x + m_width) + ((y + m_height) * m_width)];
     }
 
-    Tile &operator()(const Vec2i position) {
+    Tile& operator()(const Vec2i position) {
         return (*this)(position.x, position.y);
     }
 
@@ -46,13 +46,13 @@ class World : public SystemBase {
     void update();
     void render(float interpolation);
 
-    bool move(BodyComponent &body, int x, int y);
-    void set_position(BodyComponent &body, int x, int y);
+    bool move(BodyComponent& body, int x, int y);
+    void set_position(BodyComponent& body, int x, int y);
 
     Vec3f real_position(Vec2i position, Vec3f size);
     void component_added(const uint32_t component_type, Entity e);
 
-    TileMap &map() { return m_map; }
+    TileMap& map() { return m_map; }
 
     struct Vertex {
         Vec3f position;

@@ -22,9 +22,9 @@ void Camera::render(float interpolation) {}
 
 void Camera::update() {
     if (m_lockedEntity) {
-        PhysicsComponent *m_physics =
+        PhysicsComponent* m_physics =
             &m_lockedEntity->component<PhysicsComponent>();
-        const Vec3f &size = m_physics->size;
+        const Vec3f& size = m_physics->size;
         m_target = m_physics->position + size * 0.5f;
     } else {
         m_target += m_velocity;
@@ -49,7 +49,7 @@ void Camera::update() {
     m_view.look_at(m_position, m_target, Vec3f{0.0f, 1.0f, 0.0f});
 }
 
-void Camera::button_pressed(const KeyboardEvent &e) {
+void Camera::button_pressed(const KeyboardEvent& e) {
     switch (e.key) {
         case 'w':
             m_velocity.y = 0.01f;
@@ -83,7 +83,7 @@ void Camera::button_pressed(const KeyboardEvent &e) {
     }
 }
 
-void Camera::button_released(const KeyboardEvent &e) {
+void Camera::button_released(const KeyboardEvent& e) {
     switch (e.key) {
         case 'w':
         case 's':
@@ -102,7 +102,7 @@ void Camera::button_released(const KeyboardEvent &e) {
     }
 }
 
-void Camera::mouse_wheel(const MouseWheelEvent &e) {
+void Camera::mouse_wheel(const MouseWheelEvent& e) {
     m_zoom_velocity = float(e.delta.y) * -0.01f;
     m_zoom_drag = 0.90f;
 }
@@ -116,12 +116,12 @@ bool Camera::initialize() {
     return true;
 }
 
-void Camera::lock(Entity *e) { m_lockedEntity = e; }
+void Camera::lock(Entity* e) { m_lockedEntity = e; }
 
-const Vec3f &Camera::position() const { return m_position; }
+const Vec3f& Camera::position() const { return m_position; }
 
-const Vec3f &Camera::target_position() const { return m_target; }
+const Vec3f& Camera::target_position() const { return m_target; }
 
-Vec3f &Camera::position() { return m_position; }
+Vec3f& Camera::position() { return m_position; }
 
 } /* namespace dm */

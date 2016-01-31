@@ -62,10 +62,10 @@ void RenderSystem::render(float interpolation) {
                        {-1.0f, 100.0f});
     m_main_shader.set_uniform(m_projection, "u_projection_matrix");
 
-    for (auto &render : COMPONENTS(Render2d)) {
+    for (auto& render : COMPONENTS(Render2d)) {
         if (render.shadow && render.billboard &&
             render.parent->has_component<PhysicsComponent>()) {
-            auto &physics = render.parent->component<PhysicsComponent>();
+            auto& physics = render.parent->component<PhysicsComponent>();
             // physics.rotation.rotate(angle, {1.0f, 0.0f, 0.0f});
 
             if (!render.has_sprite("shadow")) {
@@ -95,7 +95,7 @@ void RenderSystem::render(float interpolation) {
 
     int cnt = 0;
 
-    for (auto &sprite : MemoryPool<Sprite>::instance()) {
+    for (auto& sprite : MemoryPool<Sprite>::instance()) {
         sprite.shader = &m_main_shader;
         m_sprite_batch.draw(sprite);
         cnt++;
@@ -122,14 +122,14 @@ void RenderSystem::render(float interpolation) {
     m_sprite_batch.end();
 }
 
-Entity *RenderSystem::create_cursor(const std::string &texture,
-                                    const Vec4i &color) {
-    Entity *entity = new Entity();
+Entity* RenderSystem::create_cursor(const std::string& texture,
+                                    const Vec4i& color) {
+    Entity* entity = new Entity();
 
-    auto &render = entity->assign<Render2d>();
-    auto &physics = entity->assign<PhysicsComponent>();
-    auto &anim = entity->assign<AnimationComponent>();
-    auto &body = entity->assign<BodyComponent>();
+    auto& render = entity->assign<Render2d>();
+    auto& physics = entity->assign<PhysicsComponent>();
+    auto& anim = entity->assign<AnimationComponent>();
+    auto& body = entity->assign<BodyComponent>();
 
     body.ghost = true;
 
@@ -210,7 +210,7 @@ bool RenderSystem::initialize() {
     m_terrain.transform.identity();
     m_terrain.shader = &m_main_shader;
 
-    Texture *tile = GET_MANAGER(ResourceManager)->get_texture("wood.png");
+    Texture* tile = GET_MANAGER(ResourceManager)->get_texture("wood.png");
 
     tile->set_wrap_mode(Texture::Wrap::Repeat, Texture::Wrap::Repeat);
 
@@ -228,7 +228,7 @@ bool RenderSystem::initialize() {
     m_shadow_sprite.transform.identity();
     m_shadow_sprite.color = Vec4i{255, 255, 255, 255};
 
-    AnimationSystem *animation = s_engine->system<AnimationSystem>();
+    AnimationSystem* animation = s_engine->system<AnimationSystem>();
 
     animation->register_animation(
         {"move_left",

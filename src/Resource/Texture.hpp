@@ -18,10 +18,10 @@ class Texture {
     Texture();
     virtual ~Texture();
 
-    bool load(const char *filename, Filter filter_min, Filter filter_mag,
+    bool load(const char* filename, Filter filter_min, Filter filter_mag,
               Wrap wrap_x, Wrap wrap_y);
 
-    bool load(const char *filename, Filter filter = Filter::Nearest,
+    bool load(const char* filename, Filter filter = Filter::Nearest,
               Wrap wrap = Wrap::Clamp);
 
     unsigned int upload();
@@ -39,21 +39,21 @@ class Texture {
     const bool is_bound() const { return m_bound; }
     const bool is_registered() const { return m_registered; }
 
-    void set_data(unsigned char *data);
-    void sub_data(unsigned char *data, Vec2i position, Vec2i size) const;
+    void set_data(unsigned char* data);
+    void sub_data(unsigned char* data, Vec2i position, Vec2i size) const;
 
-    const Vec2i &size() const { return m_size; }
+    const Vec2i& size() const { return m_size; }
     const int height() const { return m_size.y; }
 
     const Vec2f sizef() const { return Vec2f(m_size.x, m_size.y); }
 
-    void set_size(const Vec2i &size);
+    void set_size(const Vec2i& size);
     void set_format(const Format format);
 
     void set_filter(const Filter min, const Filter mag);
     void set_wrap_mode(const Wrap x, const Wrap y);
 
-    const std::string &filename() const;
+    const std::string& filename() const;
 
     const Texture::Format format() const { return m_format; }
 
@@ -83,7 +83,7 @@ class Texture {
     bool m_transparent;
 };
 
-inline const std::string &Texture::filename() const { return m_name; }
+inline const std::string& Texture::filename() const { return m_name; }
 
 inline void Texture::set_filter(const Filter min, const Filter mag) {
     m_filter_min = min;
@@ -101,7 +101,7 @@ inline const unsigned int to_opengl_format(Texture::Format format);
 inline const size_t Texture::id() const { return m_id; }
 inline const unsigned int Texture::opengl_id() const { return m_opengl_id; }
 
-inline void Texture::set_size(const Vec2i &size) { m_size = size; }
+inline void Texture::set_size(const Vec2i& size) { m_size = size; }
 inline void Texture::set_format(const Format format) { m_format = format; }
 
 } /* game */

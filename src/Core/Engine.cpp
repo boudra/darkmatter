@@ -61,7 +61,7 @@ bool Engine::initialize() {
     uint32_t initializedCount = 0;
 
     auto initialize_system = [this, &initialized,
-                              &initializedCount](SystemBase *system) {
+                              &initializedCount](SystemBase* system) {
 
         if (!system->initialize()) {
             Log::error("Failed to initialize %s", system->name().c_str());
@@ -87,7 +87,7 @@ bool Engine::initialize() {
     };
 
     while (initializedCount < m_systems.size()) {
-        for (SystemBase *system : m_systems) {
+        for (SystemBase* system : m_systems) {
             if (initialized[system->m_id] == true) continue;
 
             if (system->m_dependencies.empty()) {
@@ -96,7 +96,7 @@ bool Engine::initialize() {
                 bool satisfied =
                     std::all_of(system->m_dependencies.begin(),
                                 system->m_dependencies.end(),
-                                [&initialized](const uint32_t &dep) {
+                                [&initialized](const uint32_t& dep) {
                                     return initialized[dep];
                                 });
 
@@ -116,10 +116,10 @@ bool Engine::initialize() {
     return true;
 }
 
-void Engine::quit(const QuitEvent &e) { m_exit = true; }
+void Engine::quit(const QuitEvent& e) { m_exit = true; }
 
 void Engine::update() {
-    for (SystemBase *s : m_systems) {
+    for (SystemBase* s : m_systems) {
         if (s->enabled()) s->update();
     }
 }
@@ -127,7 +127,7 @@ void Engine::update() {
 void Engine::render(float interpolation) {
     m_window->clear();
 
-    for (SystemBase *s : m_systems) {
+    for (SystemBase* s : m_systems) {
         s->render(interpolation);
     }
 

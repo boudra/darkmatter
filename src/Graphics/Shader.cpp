@@ -27,7 +27,7 @@ bool ProgramShader::link() {
         GLint length, lengthRead = 0;
         glGetProgramiv(m_id, GL_INFO_LOG_LENGTH, &length);
 
-        char *log = new char[length];
+        char* log = new char[length];
         glGetProgramInfoLog(m_id, length, &lengthRead, log);
 
         Log::result(Log::Result::ERROR);
@@ -45,7 +45,7 @@ bool ProgramShader::link() {
 }
 
 void ProgramShader::unload_shaders() {
-    for (Shader &s : m_shaders) {
+    for (Shader& s : m_shaders) {
         if (s.compiled) {
             glDeleteShader(s.id);
             s.compiled = false;
@@ -59,7 +59,7 @@ void ProgramShader::bind() {
     glUseProgram(m_id);
 }
 
-bool ProgramShader::load(const char *filename, Shader::Type type) {
+bool ProgramShader::load(const char* filename, Shader::Type type) {
     assert(m_linked == false);
 
     /* Create the program */
@@ -68,7 +68,7 @@ bool ProgramShader::load(const char *filename, Shader::Type type) {
     }
 
     int size = 0;
-    char *data = nullptr;
+    char* data = nullptr;
     std::ifstream file(filename, std::ios::in);
 
     if (!file.is_open()) {
@@ -96,7 +96,7 @@ bool ProgramShader::load(const char *filename, Shader::Type type) {
         m_shaders.resize(type + 1);
     }
 
-    Shader &shader = m_shaders[type];
+    Shader& shader = m_shaders[type];
 
     if (shader.compiled) {
         glDeleteShader(shader.id);
@@ -115,11 +115,11 @@ bool ProgramShader::load(const char *filename, Shader::Type type) {
 
     Log::progress("debug", "Compiling shader %s", filename);
 
-    const GLchar *source = static_cast<const GLchar *>(data);
+    const GLchar* source = static_cast<const GLchar*>(data);
     const int sizei = static_cast<const int>(size);
 
-    glShaderSource(shader.id, 1, static_cast<const GLchar **>(&source),
-                   static_cast<const GLint *>(&sizei));
+    glShaderSource(shader.id, 1, static_cast<const GLchar**>(&source),
+                   static_cast<const GLint*>(&sizei));
     glCompileShader(shader.id);
 
     delete[] data;
@@ -131,7 +131,7 @@ bool ProgramShader::load(const char *filename, Shader::Type type) {
     if (compiled == GL_FALSE) {
         GLint length, lengthRead = 0;
         glGetShaderiv(shader.id, GL_INFO_LOG_LENGTH, &length);
-        char *log = new char[length];
+        char* log = new char[length];
         glGetShaderInfoLog(shader.id, length, &lengthRead, log);
 
         Log::result(Log::Result::ERROR);
@@ -153,29 +153,29 @@ bool ProgramShader::load(const char *filename, Shader::Type type) {
 }
 
 /* GLSL Uniform setters */
-void ProgramShader::set_uniform(int value, const char *name) {
+void ProgramShader::set_uniform(int value, const char* name) {
     assert(m_id != 0);
     glUniform1i(glGetUniformLocation(m_id, name), value);
 }
 
-void ProgramShader::set_uniform(float value, const char *name) {
+void ProgramShader::set_uniform(float value, const char* name) {
     assert(m_id != 0);
     glUniform1f(glGetUniformLocation(m_id, name), value);
 }
 
-void ProgramShader::set_uniform(const Matrix4f &value, const char *name) {
+void ProgramShader::set_uniform(const Matrix4f& value, const char* name) {
     assert(m_id != 0);
     Matrix4f transposed = value.transpose();
     glUniformMatrix4fv(glGetUniformLocation(m_id, name), 1, GL_FALSE,
                        &transposed.m[0]);
 }
 
-void ProgramShader::set_uniform(const Vec3f &value, const char *name) {
+void ProgramShader::set_uniform(const Vec3f& value, const char* name) {
     assert(m_id != 0);
     glUniform3f(glGetUniformLocation(m_id, name), value.x, value.y, value.z);
 }
 
-void ProgramShader::set_uniform(const Vec2f &value, const char *name) {
+void ProgramShader::set_uniform(const Vec2f& value, const char* name) {
     assert(m_id != 0);
     glUniform2f(glGetUniformLocation(m_id, name), value.x, value.y);
 }

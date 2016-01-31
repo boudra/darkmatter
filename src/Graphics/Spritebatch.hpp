@@ -27,31 +27,31 @@ class SpriteBatch {
     void begin();
     void end();
 
-    bool initialize(ResourceManager *resource_manager);
+    bool initialize(ResourceManager* resource_manager);
 
-    void draw(const Vec2f &position, const Vec2f &size, const size_t &texture,
-              const Vec4i &color = Color::White);
+    void draw(const Vec2f& position, const Vec2f& size, const size_t& texture,
+              const Vec4i& color = Color::White);
 
-    void draw(const Vec3f &position, const Vec2f &size, const size_t &texture,
-              const Matrix4f &transform, const Vec4i &color = Color::White);
+    void draw(const Vec3f& position, const Vec2f& size, const size_t& texture,
+              const Matrix4f& transform, const Vec4i& color = Color::White);
 
-    void draw(const Rectangle &rectangle, const size_t &sprite,
-              const Vec4i &color = Color::White);
+    void draw(const Rectangle& rectangle, const size_t& sprite,
+              const Vec4i& color = Color::White);
 
-    void draw(const Vec2f &position, const std::string &font_name,
-              const std::string &text, const Vec4i &color = Color::White);
+    void draw(const Vec2f& position, const std::string& font_name,
+              const std::string& text, const Vec4i& color = Color::White);
 
-    void draw(const Matrix4f &transform, const Vec2f &size,
-              const size_t &sprite, const Vec4i &color = Color::White);
+    void draw(const Matrix4f& transform, const Vec2f& size,
+              const size_t& sprite, const Vec4i& color = Color::White);
 
-    void draw(const Sprite &sprite);
+    void draw(const Sprite& sprite);
 
-    void set_view_matrix(const Matrix4f &matrix) { m_view = matrix; }
+    void set_view_matrix(const Matrix4f& matrix) { m_view = matrix; }
 
-    void set_default_shader(ProgramShader *shader) { m_shader = shader; }
+    void set_default_shader(ProgramShader* shader) { m_shader = shader; }
 
    private:
-    Sprite &add_sprite(const Sprite &sprite);
+    Sprite& add_sprite(const Sprite& sprite);
 
     void fill_indices();
     void batch(const size_t start, const size_t end);
@@ -63,17 +63,17 @@ class SpriteBatch {
         Vec2f texture;
     };
 
-    std::vector<Sprite *> m_ordered_sprites;
+    std::vector<Sprite*> m_ordered_sprites;
     std::vector<Sprite> m_sprites;
     std::vector<Matrix4f> m_transforms;
 
     size_t m_sprite_count;
 
-    ProgramShader *m_shader;
+    ProgramShader* m_shader;
     ProgramShader m_font_shader;
 
-    BufferObject *m_vertices;
-    BufferObject *m_ibo;
+    BufferObject* m_vertices;
+    BufferObject* m_ibo;
 
     VertexObject m_vao;
 
@@ -84,7 +84,7 @@ class SpriteBatch {
     Matrix4f m_ortho;
     Matrix4f m_view;
 
-    ResourceManager *m_resource_manager;
+    ResourceManager* m_resource_manager;
 };
 
 } /* game */

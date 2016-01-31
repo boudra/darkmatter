@@ -20,9 +20,9 @@ class Font {
     Font();
     ~Font();
 
-    bool load(Texture &texture, const char *name, const int size);
-    const size_t &texture() const;
-    const Glyph &glyph(const uint32_t caracter) const;
+    bool load(Texture& texture, const char* name, const int size);
+    const size_t& texture() const;
+    const Glyph& glyph(const uint32_t caracter) const;
 
     const int size() const { return m_size; }
 
@@ -34,9 +34,9 @@ class Font {
     std::vector<Glyph> m_glyphs;
 };
 
-inline const size_t &Font::texture() const { return m_texture; }
+inline const size_t& Font::texture() const { return m_texture; }
 
-inline const Glyph &Font::glyph(const uint32_t character) const {
+inline const Glyph& Font::glyph(const uint32_t character) const {
     return m_glyphs[character];
 }
 

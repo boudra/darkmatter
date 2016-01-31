@@ -58,7 +58,7 @@ JsonNode JsonReader::ParseValue() {
 }
 
 Any JsonReader::ParseNumber() {
-    char *start = m_data;
+    char* start = m_data;
     Any number_value;
     char last_char;
 
@@ -101,7 +101,7 @@ Any JsonReader::ParseNumber() {
 
 std::string JsonReader::ParseString() {
     char quote = *m_data++;
-    char *start = m_data;
+    char* start = m_data;
     unsigned int stringlength = 0;
     std::string result;
 
@@ -210,12 +210,12 @@ JsonNode JsonReader::ParseArray() {
     return object;
 }
 
-void JsonReader::PrintError(const std::string &message) {
+void JsonReader::PrintError(const std::string& message) {
     unsigned int lines = 0;
     unsigned int column = 0;
 
     /* Count lines and columns until we reach our current position */
-    for (char *data = m_start; data < m_data; data++) {
+    for (char* data = m_start; data < m_data; data++) {
         column++;
 
         if (*data == '\n') {
@@ -228,7 +228,7 @@ void JsonReader::PrintError(const std::string &message) {
               << message << std::endl;
 }
 
-JsonNode JsonReader::Parse(std::ifstream &file) {
+JsonNode JsonReader::Parse(std::ifstream& file) {
     std::string keyname;
 
     file.seekg(0, std::ios::end);
@@ -262,7 +262,7 @@ JsonNode JsonReader::Parse(std::ifstream &file) {
     return root;
 }
 
-JsonNode JsonReader::Parse(const char *filename) {
+JsonNode JsonReader::Parse(const char* filename) {
     std::ifstream file(filename, std::ios::in | std::ios::binary);
 
     if (!file.is_open()) {

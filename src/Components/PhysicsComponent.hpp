@@ -32,7 +32,7 @@ PhysicsComponent()
       rotation_origin(0.0f),
       scale_origin(0.0f) {}
 
-inline void set_size(const Vec3f &size) {
+inline void set_size(const Vec3f& size) {
     this->size = size;
     pivot = this->size.x * 0.5f;
 }

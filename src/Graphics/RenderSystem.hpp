@@ -27,31 +27,31 @@ class RenderSystem : public SystemBase {
 
     void set_frame_time(uint32_t time) { m_time = time; }
 
-    Entity *create_cursor(const std::string &texture,
-                          const Vec4i &color = Color::Yellow);
+    Entity* create_cursor(const std::string& texture,
+                          const Vec4i& color = Color::Yellow);
 
-    Entity *cursor() { return m_cursor; }
+    Entity* cursor() { return m_cursor; }
 
-    Entity *selected() { return m_selected; }
+    Entity* selected() { return m_selected; }
 
-    const Matrix4f &projection() const { return m_projection; }
+    const Matrix4f& projection() const { return m_projection; }
 
-    ProgramShader &shader() { return m_main_shader; }
+    ProgramShader& shader() { return m_main_shader; }
 
-    ProgramShader &terrain_shader() { return terrain_shader_; }
+    ProgramShader& terrain_shader() { return terrain_shader_; }
 
    private:
     SpriteBatch m_sprite_batch;
     Sprite m_terrain;
     Sprite m_shadow_sprite;
 
-    Entity *m_cursor;
-    Entity *m_selected;
+    Entity* m_cursor;
+    Entity* m_selected;
 
     uint32_t m_time;
     Matrix4f m_projection;
     Matrix4f m_ui_ortho;
-    Camera *m_camera;
+    Camera* m_camera;
 
     ObjectPool<Sprite> m_sprites;
 

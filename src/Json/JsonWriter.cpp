@@ -2,9 +2,9 @@
 
 namespace dm {
 
-void JsonWriter::PrintNode(JsonNode &node) {
+void JsonWriter::PrintNode(JsonNode& node) {
     if (node.GetType() == JsonNode::Type::Value) {
-        const Any &value = node.GetValue();
+        const Any& value = node.GetValue();
 
         if (value.Type().is<long>()) {
             m_buffer << value.Cast<long>();

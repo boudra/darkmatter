@@ -28,7 +28,7 @@ class ObjectPool {
         return id;
     }
 
-    size_t push(const value_type &value) {
+    size_t push(const value_type& value) {
         ssize_t id = this->find_free();
 
         if (id > -1) {
@@ -53,22 +53,22 @@ class ObjectPool {
         return id;
     }
 
-    void remove(const size_t &id) {
+    void remove(const size_t& id) {
         m_free[id] = true;
         m_objects[id] = value_type();
     }
 
-    value_type &operator[](const size_t &id) {
+    value_type& operator[](const size_t& id) {
         assert(id >= 0 && id < m_objects.size());
         return m_objects[id];
     }
 
-    value_type &get(const size_t &id) { return (*this)[id]; }
+    value_type& get(const size_t& id) { return (*this)[id]; }
 
     class iterator : public std::iterator<std::input_iterator_tag, value_type> {
        private:
-        const std::vector<bool> &m_free;
-        std::vector<value_type> &m_components;
+        const std::vector<bool>& m_free;
+        std::vector<value_type>& m_components;
         size_t m_index;
 
         void next() {
@@ -78,29 +78,29 @@ class ObjectPool {
         }
 
        public:
-        iterator(const std::vector<bool> &free,
-                 std::vector<value_type> &components, size_t index)
+        iterator(const std::vector<bool>& free,
+                 std::vector<value_type>& components, size_t index)
             : m_free(free), m_components(components), m_index(index) {}
 
-        iterator &operator++() {
+        iterator& operator++() {
             this->next();
             return *this;
         }
 
-        bool operator==(const iterator &rhs) const {
+        bool operator==(const iterator& rhs) const {
             return m_index == rhs.m_index;
         }
 
-        bool operator!=(const iterator &rhs) const {
+        bool operator!=(const iterator& rhs) const {
             return m_index != rhs.m_index;
         }
 
-        value_type &operator*() { return m_components[m_index]; }
-        value_type *operator->() { return &m_components[m_index]; }
+        value_type& operator*() { return m_components[m_index]; }
+        value_type* operator->() { return &m_components[m_index]; }
 
-        const value_type *operator->() const { return &m_components[m_index]; }
+        const value_type* operator->() const { return &m_components[m_index]; }
 
-        const value_type &operator*() const { return m_components[m_index]; }
+        const value_type& operator*() const { return m_components[m_index]; }
     };
 
     iterator begin() { return iterator(m_free, m_objects, 0); }

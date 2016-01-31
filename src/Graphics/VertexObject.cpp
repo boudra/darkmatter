@@ -59,7 +59,7 @@ void VertexObject::add_attribute(size_t buffer, unsigned int location,
     assert(m_buffers.size() > buffer && m_bound);
 
     glVertexAttribPointer(location, count, primitive_type(valueType), GL_FALSE,
-                          stride, (GLvoid *)(uintptr_t)offset);
+                          stride, (GLvoid*)(uintptr_t)offset);
     glEnableVertexAttribArray(location);
 
     if (m_locations.size() <= location) {

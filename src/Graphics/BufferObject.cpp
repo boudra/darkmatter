@@ -66,7 +66,7 @@ void BufferObject::release() {
     m_bound = false;
 }
 
-void *BufferObject::p_map(const Access access) {
+void* BufferObject::p_map(const Access access) {
     assert(m_bound);
 
     GLenum opengl_access;
@@ -85,7 +85,7 @@ void *BufferObject::p_map(const Access access) {
             assert(false && "Invalid access policy");
     };
 
-    void *ptr = glMapBuffer(m_type, opengl_access);
+    void* ptr = glMapBuffer(m_type, opengl_access);
     assert(ptr && "Failed to map the buffer, glMapBuffer returned NULL");
     m_mapped = true;
 
@@ -98,7 +98,7 @@ void BufferObject::unmap() {
     m_mapped = false;
 }
 
-void BufferObject::p_set_data(const void *data, const Usage usage) {
+void BufferObject::p_set_data(const void* data, const Usage usage) {
     GLenum opengl_usage;
 
     assert(m_bound);

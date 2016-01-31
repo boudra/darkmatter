@@ -16,21 +16,21 @@ class Vec2 {
     Vec2(T x, T y) : x(x), y(y){};
 
     template <typename other_type>
-    Vec2(const Vec2<other_type> &other)
+    Vec2(const Vec2<other_type>& other)
         : x(static_cast<T>(other.x)), y(static_cast<T>(other.y)) {}
 
     T x, y;
 
-    inline friend std::ostream &operator<<(std::ostream &stream,
-                                           const Vec2<T> &vec) {
+    inline friend std::ostream& operator<<(std::ostream& stream,
+                                           const Vec2<T>& vec) {
         return stream << '{' << vec.x << ',' << vec.y << '}';
     }
 
-    inline Vec2<T> operator+(const Vec2<T> &vec) const {
+    inline Vec2<T> operator+(const Vec2<T>& vec) const {
         return Vec2<T>(x + vec.x, y + vec.y);
     }
 
-    inline Vec2<T> operator-(const Vec2<T> &vec) const {
+    inline Vec2<T> operator-(const Vec2<T>& vec) const {
         return Vec2<T>(x - vec.x, y - vec.y);
     }
 
@@ -57,37 +57,37 @@ class Vec2 {
         return Vec2<T>(x / val, y / val);
     }
 
-    inline Vec2<T> operator*(const Vec2<T> &vec) const {
+    inline Vec2<T> operator*(const Vec2<T>& vec) const {
         return Vec2<T>(x * vec.x, y * vec.y);
     }
 
-    inline Vec2<T> operator/(const Vec2<T> &vec) const {
+    inline Vec2<T> operator/(const Vec2<T>& vec) const {
         return Vec2<T>(x / vec.x, y / vec.y);
     }
 
-    inline const Vec2<T> &operator+=(const Vec2<T> &vec) {
-        return *this = *this + vec;
+    inline const Vec2<T>& operator+=(const Vec2<T>& vec) {
+        return * this = *this + vec;
     }
 
-    inline const Vec2<T> &operator-=(const Vec2<T> &vec) {
-        return *this = *this - vec;
+    inline const Vec2<T>& operator-=(const Vec2<T>& vec) {
+        return * this = *this - vec;
     }
 
-    inline const Vec2<T> &operator*=(const Vec2<T> &vec) {
-        return *this = *this * vec;
+    inline const Vec2<T>& operator*=(const Vec2<T>& vec) {
+        return * this = *this * vec;
     }
 
-    inline const Vec2<T> &operator=(const Vec2<T> &vec) {
+    inline const Vec2<T>& operator=(const Vec2<T>& vec) {
         x = vec.x;
         y = vec.y;
         return *this;
     }
 
-    inline bool operator>(const Vec2<T> &vec) const {
+    inline bool operator>(const Vec2<T>& vec) const {
         return (x > vec.x && y > vec.y);
     }
 
-    inline bool operator<(const Vec2<T> &vec) const { return !((*this) > vec); }
+    inline bool operator<(const Vec2<T>& vec) const { return !((*this) > vec); }
 
     inline bool operator>(const T value) const {
         return (x > value && y > value);

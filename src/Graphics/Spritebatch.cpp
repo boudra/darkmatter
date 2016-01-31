@@ -38,7 +38,7 @@ void SpriteBatch::fill_indices() {
                                     BufferObject::Usage::StaticDraw);
 }
 
-bool SpriteBatch::initialize(ResourceManager *resource_manager) {
+bool SpriteBatch::initialize(ResourceManager* resource_manager) {
     m_resource_manager = resource_manager;
 
     m_ordered_sprites.reserve(MinSprites);
@@ -92,9 +92,9 @@ void SpriteBatch::begin() {
     m_sprite_count = 0;
 }
 
-Sprite &SpriteBatch::add_sprite(const Sprite &sprite) {
+Sprite& SpriteBatch::add_sprite(const Sprite& sprite) {
     m_sprites.push_back(sprite);
-    Sprite &s = m_sprites.back();
+    Sprite& s = m_sprites.back();
     if (s.shader == nullptr) s.shader = m_shader;
     m_sprite_count++;
 
@@ -105,16 +105,16 @@ Sprite &SpriteBatch::add_sprite(const Sprite &sprite) {
     return s;
 }
 
-void SpriteBatch::draw(const Sprite &sprite) { this->add_sprite(sprite); }
+void SpriteBatch::draw(const Sprite& sprite) { this->add_sprite(sprite); }
 
-void SpriteBatch::draw(const Vec2f &position, const Vec2f &size,
-                       const size_t &sprite, const Vec4i &color) {
+void SpriteBatch::draw(const Vec2f& position, const Vec2f& size,
+                       const size_t& sprite, const Vec4i& color) {
     this->draw(Rectangle(position, size), sprite, color);
 }
 
-void SpriteBatch::draw(const Vec3f &position, const Vec2f &size,
-                       const size_t &texture, const Matrix4f &transform,
-                       const Vec4i &color) {
+void SpriteBatch::draw(const Vec3f& position, const Vec2f& size,
+                       const size_t& texture, const Matrix4f& transform,
+                       const Vec4i& color) {
     Sprite sprite;
 
     sprite.transform = transform;
@@ -127,8 +127,8 @@ void SpriteBatch::draw(const Vec3f &position, const Vec2f &size,
     this->add_sprite(sprite);
 }
 
-void SpriteBatch::draw(const Rectangle &rectangle, const size_t &texture,
-                       const Vec4i &color) {
+void SpriteBatch::draw(const Rectangle& rectangle, const size_t& texture,
+                       const Vec4i& color) {
     Sprite sprite;
 
     sprite.color = color;
@@ -138,8 +138,8 @@ void SpriteBatch::draw(const Rectangle &rectangle, const size_t &texture,
     this->add_sprite(sprite);
 }
 
-void SpriteBatch::draw(const Matrix4f &transform, const Vec2f &size,
-                       const size_t &texture, const Vec4i &color) {
+void SpriteBatch::draw(const Matrix4f& transform, const Vec2f& size,
+                       const size_t& texture, const Vec4i& color) {
     Sprite sprite;
 
     sprite.transform = transform;
@@ -150,17 +150,17 @@ void SpriteBatch::draw(const Matrix4f &transform, const Vec2f &size,
     this->add_sprite(sprite);
 }
 
-void SpriteBatch::draw(const Vec2f &position, const std::string &font_name,
-                       const std::string &text, const Vec4i &color) {
+void SpriteBatch::draw(const Vec2f& position, const std::string& font_name,
+                       const std::string& text, const Vec4i& color) {
     Vec2f cursor = position;
-    Font *font = m_resource_manager->get_font(font_name);
+    Font* font = m_resource_manager->get_font(font_name);
 
     Sprite sprite;
 
     sprite.transform.identity();
 
-    for (const char &c : text) {
-        const Glyph &g = font->glyph((uint32_t)c);
+    for (const char& c : text) {
+        const Glyph& g = font->glyph((uint32_t)c);
 
         sprite.position = cursor + g.vertices.position;
         sprite.size = g.vertices.size;
@@ -184,15 +184,15 @@ void SpriteBatch::end() { this->flush(); }
 
 void SpriteBatch::flush() {
     m_ordered_sprites.reserve(m_sprites.size());
-    for (Sprite &s : m_sprites) m_ordered_sprites.push_back(&s);
+    for (Sprite& s : m_sprites) m_ordered_sprites.push_back(&s);
 
     /* Order by transparency, shader and textures */
     std::sort(m_ordered_sprites.begin(), m_ordered_sprites.end(),
-              [this](const Sprite *a, const Sprite *b) {
+              [this](const Sprite* a, const Sprite* b) {
 
-                  const Texture *tex_a =
+                  const Texture* tex_a =
                       this->m_resource_manager->get_texture(a->texture);
-                  const Texture *tex_b =
+                  const Texture* tex_b =
                       this->m_resource_manager->get_texture(b->texture);
 
                   if (tex_a->transparent() && tex_b->transparent())
@@ -211,7 +211,7 @@ void SpriteBatch::flush() {
     m_vertices->resize(std::max(MinSprites * 4, m_sprite_count * 4));
     m_vertices->set_data<Vertex>(nullptr, BufferObject::Usage::StreamDraw);
 
-    Vertex *vertices = m_vertices->map<Vertex>(BufferObject::Access::ReadWrite);
+    Vertex* vertices = m_vertices->map<Vertex>(BufferObject::Access::ReadWrite);
 
     assert(vertices != nullptr);
 
@@ -220,8 +220,8 @@ void SpriteBatch::flush() {
     for (size_t i = 0; i < m_sprite_count; ++i) {
         Vertex v[4];
 
-        Sprite &s = *m_ordered_sprites[i];
-        const Texture *tex = this->m_resource_manager->get_texture(s.texture);
+        Sprite& s = *m_ordered_sprites[i];
+        const Texture* tex = this->m_resource_manager->get_texture(s.texture);
 
         v[0].position = s.position;
         v[1].position = s.position;
@@ -277,7 +277,7 @@ void SpriteBatch::flush() {
     m_vao.bind();
 
     size_t batch_size = 0, current = 0;
-    ProgramShader *last_shader = m_ordered_sprites[0]->shader;
+    ProgramShader* last_shader = m_ordered_sprites[0]->shader;
 
     while (current < m_sprite_count) {
         if (m_ordered_sprites[current]->shader != last_shader) {
@@ -314,8 +314,8 @@ void SpriteBatch::batch(const size_t start, const size_t end) {
             m_resource_manager->get_texture(last_texture)->bind();
 
             glDrawElements(GL_TRIANGLES, batch_size * 6, GL_UNSIGNED_SHORT,
-                           (void *)(uintptr_t)((current - batch_size) * 6 *
-                                               sizeof(unsigned short)));
+                           (void*)(uintptr_t)((current - batch_size) * 6 *
+                                              sizeof(unsigned short)));
 
             batch_size = 0;
 
@@ -331,8 +331,8 @@ void SpriteBatch::batch(const size_t start, const size_t end) {
     m_resource_manager->get_texture(last_texture)->bind();
 
     glDrawElements(GL_TRIANGLES, batch_size * 6, GL_UNSIGNED_SHORT,
-                   (void *)(uintptr_t)((current - batch_size) * 6 *
-                                       sizeof(unsigned short)));
+                   (void*)(uintptr_t)((current - batch_size) * 6 *
+                                      sizeof(unsigned short)));
 
     m_resource_manager->get_texture(last_texture)->release();
 }

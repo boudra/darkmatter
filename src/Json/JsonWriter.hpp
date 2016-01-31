@@ -13,19 +13,19 @@ class JsonWriter {
 
     ~JsonWriter() { m_buffer.clear(); }
 
-    std::string PrettyPrint(JsonNode &root) {
+    std::string PrettyPrint(JsonNode& root) {
         PrintNode(root);
         return m_buffer.str();
     }
 
-    void PrettyPrint(JsonNode &root, std::ostream &out) {
+    void PrettyPrint(JsonNode& root, std::ostream& out) {
         this->PrintNode(root);
         out << m_buffer.str() << '\n';
         ;
     }
 
    private:
-    void PrintNode(JsonNode &node);
+    void PrintNode(JsonNode& node);
 
     unsigned int m_printlevel;
     unsigned int m_identWidth;

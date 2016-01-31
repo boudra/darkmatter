@@ -7,7 +7,7 @@
 
 namespace dm {
 
-void InputSystem::set_window(SDL_Window *window) {
+void InputSystem::set_window(SDL_Window* window) {
     m_window = window;
 
     SDL_GetWindowSize(window, &m_window_size.x, &m_window_size.y);

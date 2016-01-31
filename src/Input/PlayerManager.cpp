@@ -33,15 +33,15 @@ PlayerManager::PlayerManager() {
                             EventType::MOUSE_LPRESS);
 }
 
-void PlayerManager::mouse_click(const MouseEvent &e) {
-    TileMap &map = s_engine->system<World>()->map();
+void PlayerManager::mouse_click(const MouseEvent& e) {
+    TileMap& map = s_engine->system<World>()->map();
     // AnimationSystem* animation = s_engine->System<AnimationSystem>();
 
-    Entity *m_selection = s_engine->system<RenderSystem>()->selected();
-    Cursor &cursor = m_selection->component<Cursor>();
+    Entity* m_selection = s_engine->system<RenderSystem>()->selected();
+    Cursor& cursor = m_selection->component<Cursor>();
 
     if (!map(m_hover.x, m_hover.y).free) {
-        Entity *selected = map(m_hover.x, m_hover.y).entity;
+        Entity* selected = map(m_hover.x, m_hover.y).entity;
         if (!selected->has_component<Cursor>()) {
             m_selected = m_hover;
             cursor.selected = selected;
@@ -50,11 +50,11 @@ void PlayerManager::mouse_click(const MouseEvent &e) {
     }
 
     if (cursor.selected && map(m_hover).free) {
-        auto &body = cursor.selected->component<BodyComponent>();
-        auto &render = cursor.selected->component<Render2d>();
-        auto &body_sprite = render.get_sprite("body");
+        auto& body = cursor.selected->component<BodyComponent>();
+        auto& render = cursor.selected->component<Render2d>();
+        auto& body_sprite = render.get_sprite("body");
 
-        Entity *selected_entity = cursor.selected;
+        Entity* selected_entity = cursor.selected;
 
         if ((m_hover - body.position).x < 0 &&
             body.direction == Direction::RIGHT) {
@@ -69,12 +69,12 @@ void PlayerManager::mouse_click(const MouseEvent &e) {
         while (!body.commands.empty()) body.pop_command();
 
         if (selected_entity->has_component<AnimationComponent>()) {
-            auto &animation = selected_entity->component<AnimationComponent>();
+            auto& animation = selected_entity->component<AnimationComponent>();
             size_t animation_id = animation.animate("running", 1.0f, true);
 
             body.execute(Command::Type::GO_TO, m_hover, [animation_id,
                                                          selected_entity]() {
-                auto &animation =
+                auto& animation =
                     selected_entity->component<AnimationComponent>();
                 animation.stop(animation_id);
                 animation.animate("idle", 1.0f, true);
@@ -86,7 +86,7 @@ void PlayerManager::mouse_click(const MouseEvent &e) {
     }
 }
 
-void PlayerManager::mouse_motion(const MouseEvent &e) {
+void PlayerManager::mouse_motion(const MouseEvent& e) {
     /*
 
     static const Vec2f NormalizeWindowCoord {1.0f/1280.0f, 1.0f/720.0f};
@@ -126,7 +126,7 @@ void PlayerManager::mouse_motion(const MouseEvent &e) {
 
     static const Vec2f normalize_coordinates{1.0f / 1280.0f, 1.0f / 720.0f};
 
-    Entity *cursor = s_engine->system<RenderSystem>()->cursor();
+    Entity* cursor = s_engine->system<RenderSystem>()->cursor();
 
     Matrix4f projection = s_engine->system<RenderSystem>()->projection();
     projection.inverse();
@@ -161,8 +161,8 @@ void PlayerManager::mouse_motion(const MouseEvent &e) {
 
     // LOG(DEBUG, "POINT -> " << point);
 
-    auto &body = cursor->component<BodyComponent>();
-    auto &physics = cursor->component<PhysicsComponent>();
+    auto& body = cursor->component<BodyComponent>();
+    auto& physics = cursor->component<PhysicsComponent>();
 
     Vec2i tile{int(std::floor(point.x / TILE_SIZE.x)),
                int(std::floor(point.y / TILE_SIZE.y))};
@@ -176,7 +176,7 @@ void PlayerManager::mouse_motion(const MouseEvent &e) {
         s_engine->system<World>()->real_position(m_hover, physics.size);
 }
 
-void PlayerManager::button_released(const KeyboardEvent &e) {
+void PlayerManager::button_released(const KeyboardEvent& e) {
     switch (e.key) {
         case 'w':
         case 's':
@@ -199,8 +199,8 @@ void PlayerManager::button_released(const KeyboardEvent &e) {
     }
 }
 
-void PlayerManager::button_pressed(const KeyboardEvent &e) {
-    auto &body = m_player->component<BodyComponent>();
+void PlayerManager::button_pressed(const KeyboardEvent& e) {
+    auto& body = m_player->component<BodyComponent>();
 
     switch (e.key) {
         case 'w':
@@ -224,11 +224,11 @@ void PlayerManager::button_pressed(const KeyboardEvent &e) {
     }
 }
 
-void PlayerManager::set_player(Entity *player) {
+void PlayerManager::set_player(Entity* player) {
     s_engine->system<RenderSystem>()->selected()->component<Cursor>().selected =
         player;
     m_player = player;
 }
 
-const Entity *PlayerManager::player() const { return m_player; }
+const Entity* PlayerManager::player() const { return m_player; }
 }

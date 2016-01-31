@@ -18,17 +18,17 @@ class Log {
     static struct timeval begin;
 
     template <typename... arg_types>
-    static void debug(const char *fmt, arg_types &&... args) {
+    static void debug(const char* fmt, arg_types&&... args) {
         log("debug", fmt, std::forward<arg_types>(args)...);
     }
 
     template <typename... arg_types>
-    static void info(const char *fmt, arg_types &&... args) {
+    static void info(const char* fmt, arg_types&&... args) {
         log("info", fmt, std::forward<arg_types>(args)...);
     }
 
     template <typename... arg_types>
-    static void error(const char *fmt, arg_types &&... args) {
+    static void error(const char* fmt, arg_types&&... args) {
         meta("error");
         fmt::printf("\x1B[31m");
         fmt::printf(fmt, std::forward<arg_types>(args)...);
@@ -37,7 +37,7 @@ class Log {
     }
 
     template <typename... arg_types>
-    static void ok(const char *fmt, arg_types &&... args) {
+    static void ok(const char* fmt, arg_types&&... args) {
         meta("OK");
         fmt::printf("\x1B[32m");
         fmt::printf(fmt, std::forward<arg_types>(args)...);
@@ -46,14 +46,14 @@ class Log {
     }
 
     template <typename... arg_types>
-    static void log(const char *level, const char *fmt, arg_types &&... args) {
+    static void log(const char* level, const char* fmt, arg_types&&... args) {
         echo(level, fmt, std::forward<arg_types>(args)...);
         fmt::printf("\n");
     }
 
     template <typename... arg_types>
-    static void progress(const char *level, const char *fmt,
-                         arg_types &&... args) {
+    static void progress(const char* level, const char* fmt,
+                         arg_types&&... args) {
         echo(level, fmt, std::forward<arg_types>(args)...);
         fmt::printf(" ... ");
     }
@@ -72,7 +72,7 @@ class Log {
     }
 
    private:
-    static void meta(const char *level) {
+    static void meta(const char* level) {
         struct timeval time;
 
         gettimeofday(&time, NULL);
@@ -84,7 +84,7 @@ class Log {
     }
 
     template <typename... arg_types>
-    static void echo(const char *level, const char *fmt, arg_types &&... args) {
+    static void echo(const char* level, const char* fmt, arg_types&&... args) {
         meta(level);
         fmt::printf(fmt, std::forward<arg_types>(args)...);
     }

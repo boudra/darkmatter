@@ -17,7 +17,7 @@ class Matrix4f {
     inline constexpr Matrix4f(float first, T... next)
         : m{first, next...} {}
 
-    Matrix4f &transpose() {
+    Matrix4f& transpose() {
         std::swap(m[1], m[4]);
         std::swap(m[2], m[8]);
         std::swap(m[3], m[12]);
@@ -111,20 +111,20 @@ class Matrix4f {
         return true;
     }
 
-    const float *data() const { return &m[0]; }
+    const float* data() const { return &m[0]; }
 
-    Matrix4f &identity() {
+    Matrix4f& identity() {
         m[0] = m[5] = m[10] = m[15] = 1.0f;
         m[1] = m[2] = m[3] = m[4] = m[6] = m[7] = m[8] = m[9] = m[11] = m[12] =
             m[13] = m[14] = 0.0f;
         return *this;
     }
 
-    Matrix4f &translate(const Vec3f &v) { return translate(v.x, v.y, v.z); }
+    Matrix4f& translate(const Vec3f& v) { return translate(v.x, v.y, v.z); }
 
-    Matrix4f &translate(const Vec2f &v) { return translate(v.x, v.y, 0.0f); }
+    Matrix4f& translate(const Vec2f& v) { return translate(v.x, v.y, 0.0f); }
 
-    Matrix4f &translate(const float x, const float y, const float z) {
+    Matrix4f& translate(const float x, const float y, const float z) {
         m[3] += m[0] * x + m[1] * y + m[2] * z;
         m[7] += m[4] * x + m[5] * y + m[6] * z;
         m[11] += m[8] * x + m[9] * y + m[10] * z;
@@ -133,21 +133,21 @@ class Matrix4f {
         return *this;
     }
 
-    Matrix4f &scale(const Vec3f &v) { return scale(v.x, v.y, v.z); }
+    Matrix4f& scale(const Vec3f& v) { return scale(v.x, v.y, v.z); }
 
-    Matrix4f &scale(const Vec2f &v) { return scale(v.x, v.y, 1.0f); }
+    Matrix4f& scale(const Vec2f& v) { return scale(v.x, v.y, 1.0f); }
 
-    Matrix4f &scale(const float x, const float y, const float z) {
+    Matrix4f& scale(const float x, const float y, const float z) {
         Matrix4f res(1.0f);
 
         res[0] = x;
         res[5] = y;
         res[10] = z;
 
-        return *this = *this * res;
+        return * this = *this * res;
     }
 
-    const Matrix4f &rotate(const float &angle, const Vec3f &r) {
+    const Matrix4f& rotate(const float& angle, const Vec3f& r) {
         const float c = cos(angle);
         const float s = sin(angle);
 
@@ -173,10 +173,10 @@ class Matrix4f {
         t.m[14] = 0.0f;
         t.m[15] = 1.0f;
 
-        return *this = t * *this;
+        return * this = t * *this;
     }
 
-    const Matrix4f &ortho(const Rectangle &plane, const Vec2f &depth) {
+    const Matrix4f& ortho(const Rectangle& plane, const Vec2f& depth) {
         m[0] = 2.0f / (plane.size.x - plane.position.x);
         m[1] = 0.0f;
         m[2] = 0.0f;
@@ -198,7 +198,7 @@ class Matrix4f {
         return *this;
     }
 
-    const Matrix4f &perspective(const float &aspect, const float near,
+    const Matrix4f& perspective(const float& aspect, const float near,
                                 const float far, const float fov) {
         float scale = tan((M_PI / 180.0f) * (fov * 0.5));
         m[0] = 1.0f / (aspect * scale);
@@ -220,11 +220,11 @@ class Matrix4f {
         return *this;
     }
 
-    const Matrix4f &look_at(const Vec3f &eye, const Vec3f &target,
-                            const Vec3f &up) {
-        const Vec3f &f = Vec3f(target - eye).normalize();
-        const Vec3f &s = f.cross(up).normalize();
-        const Vec3f &u = s.cross(f);
+    const Matrix4f& look_at(const Vec3f& eye, const Vec3f& target,
+                            const Vec3f& up) {
+        const Vec3f& f = Vec3f(target - eye).normalize();
+        const Vec3f& s = f.cross(up).normalize();
+        const Vec3f& u = s.cross(f);
 
         m[0] = s.x;
         m[1] = s.y;
@@ -250,7 +250,7 @@ class Matrix4f {
         return *this;
     }
 
-    inline Matrix4f operator*(const Matrix4f &n) const {
+    inline Matrix4f operator*(const Matrix4f& n) const {
         return Matrix4f(
             m[0] * n[0] + m[1] * n[4] + m[2] * n[8] + m[3] * n[12],
             m[0] * n[1] + m[1] * n[5] + m[2] * n[9] + m[3] * n[13],
@@ -270,14 +270,14 @@ class Matrix4f {
             m[12] * n[3] + m[13] * n[7] + m[14] * n[11] + m[15] * n[15]);
     }
 
-    inline Vec3f operator*(const Vec3f &rhs) const {
+    inline Vec3f operator*(const Vec3f& rhs) const {
         return Vec3f(
             m[0] * rhs.x + m[1] * rhs.y + m[2] * rhs.z + m[3] * 1.0f,
             m[4] * rhs.x + m[5] * rhs.y + m[6] * rhs.z + m[7] * 1.0f,
             m[8] * rhs.x + m[9] * rhs.y + m[10] * rhs.z + m[11] * 1.0f);
     }
 
-    inline Vec4f operator*(const Vec4f &rhs) const {
+    inline Vec4f operator*(const Vec4f& rhs) const {
         return Vec4f(
             m[0] * rhs.x + m[1] * rhs.y + m[2] * rhs.z + m[3] * rhs.w,
             m[4] * rhs.x + m[5] * rhs.y + m[6] * rhs.z + m[7] * rhs.w,
@@ -285,18 +285,18 @@ class Matrix4f {
             m[12] * rhs.x + m[13] * rhs.y + m[14] * rhs.z + m[15] * rhs.w);
     }
 
-    inline Vec2f operator*(const Vec2f &rhs) const {
+    inline Vec2f operator*(const Vec2f& rhs) const {
         Vec3f v = *this * Vec3f(rhs);
         return Vec2f(v.x, v.y);
     }
 
-    inline const float &operator[](const size_t &index) const {
+    inline const float& operator[](const size_t& index) const {
         return m[index];
     }
-    inline float &operator[](const size_t &index) { return m[index]; }
+    inline float& operator[](const size_t& index) { return m[index]; }
 
-    inline friend std::ostream &operator<<(std::ostream &stream,
-                                           const Matrix4f &m) {
+    inline friend std::ostream& operator<<(std::ostream& stream,
+                                           const Matrix4f& m) {
         return stream << std::endl
                       << std::right << std::fixed << std::setprecision(5) << '{'
                       << std::setw(8) << m[0] << ',' << std::setw(8) << m[1]

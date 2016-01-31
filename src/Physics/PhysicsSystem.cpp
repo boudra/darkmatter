@@ -14,19 +14,19 @@ bool PhysicsSystem::initialize() { return true; }
 
 void PhysicsSystem::render(float interpolation) {}
 
-bool check_aabb(const AABB &a, const AABB &b) {
+bool check_aabb(const AABB& a, const AABB& b) {
     return (a.max.x > b.min.x && a.min.x < b.max.x && a.max.y > b.min.y &&
             a.min.y < b.max.y && a.max.z > b.min.z && a.min.z < b.max.z);
 }
 
 void PhysicsSystem::update() {
     float speed = 0.0f;
-    auto &components = COMPONENTS(PhysicsComponent);
+    auto& components = COMPONENTS(PhysicsComponent);
     Matrix4f rotation;
 
     int cnt = 0;
 
-    for (PhysicsComponent &c : components) {
+    for (PhysicsComponent& c : components) {
         c.velocity += (c.acceleration / c.mass);
         c.velocity *= c.friction;
 

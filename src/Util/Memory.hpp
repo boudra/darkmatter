@@ -15,28 +15,28 @@ namespace dm {
 template <typename object_type>
 class Allocator {
    public:
-    inline static object_type *allocate(const size_t &elements) {
-        object_type *new_block = reinterpret_cast<object_type *>(operator new(
+    inline static object_type* allocate(const size_t& elements) {
+        object_type* new_block = reinterpret_cast<object_type*>(operator new(
             sizeof(object_type) * elements, std::nothrow));
 
         if (!new_block) throw std::bad_alloc();
         return new_block;
     }
 
-    inline static void deallocate(object_type *&ptr) {
+    inline static void deallocate(object_type*& ptr) {
         operator delete(ptr);
         ptr = nullptr;
     }
 
-    inline static object_type *reallocate(object_type *&ptr, const size_t size,
+    inline static object_type* reallocate(object_type*& ptr, const size_t size,
                                           const size_t new_size) {
-        object_type *new_block = allocate(new_size);
+        object_type* new_block = allocate(new_size);
         if (ptr) {
             std::memcpy(new_block, ptr,
                         sizeof(object_type) * std::min(size, new_size));
             deallocate(ptr);
         }
-        return reinterpret_cast<object_type *>(new_block);
+        return reinterpret_cast<object_type*>(new_block);
     }
 };
 
@@ -49,7 +49,7 @@ class Stack {
 
     ~Stack() { allocator::deallocate(data_); }
 
-    void reserve(const size_t &elements) {
+    void reserve(const size_t& elements) {
         data_ = allocator::reallocate(data_, top_, elements);
         size_ = elements;
     }
@@ -58,7 +58,7 @@ class Stack {
     const size_t size() const { return top_; }
 
     template <typename... arg_types>
-    object_type &push(arg_types &&... args) {
+    object_type& push(arg_types&&... args) {
         ++top_;
 
         /* needs more memory */
@@ -71,18 +71,18 @@ class Stack {
                      object_type(std::forward<arg_types>(args)...));
     }
 
-    object_type &pop() { return data_[--top_]; }
+    object_type& pop() { return data_[--top_]; }
     bool empty() { return (top_ == 0); }
     void clear() { top_ = 0; }
-    object_type *begin() { return data_; }
-    object_type *end() { return data_ + top_; }
+    object_type* begin() { return data_; }
+    object_type* end() { return data_ + top_; }
 
     /* sort it in descending order in memory (ascending in pop order) */
     void sort() { std::sort(data_, data_ + top_, std::greater<object_type>()); }
 
    private:
     unsigned int size_;
-    object_type *data_;
+    object_type* data_;
     unsigned int top_;
 };
 
@@ -91,29 +91,29 @@ class MemoryPool {
    public:
     struct Block {
         object_type data_[block_size];
-        Block *next_;
-        Block *prev_;
+        Block* next_;
+        Block* prev_;
     };
 
     using allocator = Allocator<object_type>;
     using block_allocator = Allocator<Block>;
 
     template <typename... arg_types>
-    object_type &push(arg_types &&... args) {
-        object_type *new_object = this->allocate(1);
+    object_type& push(arg_types&&... args) {
+        object_type* new_object = this->allocate(1);
         if (new_object)
             new (new_object) object_type(std::forward<arg_types>(args)...);
         return *new_object;
     }
 
-    object_type &push() {
-        object_type *new_object = this->allocate(1);
+    object_type& push() {
+        object_type* new_object = this->allocate(1);
         if (new_object) new (new_object) object_type();
         return *new_object;
     }
 
-    object_type *allocate(const size_t size) {
-        object_type *new_object = nullptr;
+    object_type* allocate(const size_t size) {
+        object_type* new_object = nullptr;
         /* ran out of space, allocate a new block */
         if (free_.empty()) allocate_block();
         new_object = free_.pop();
@@ -121,20 +121,20 @@ class MemoryPool {
         return (new_object);
     }
 
-    void deallocate(object_type *ptr) {
+    void deallocate(object_type* ptr) {
         /* mark it as free */
         free_.push(ptr);
         free_.sort();
         size_--;
     }
 
-    static MemoryPool<object_type, block_size> &instance() {
+    static MemoryPool<object_type, block_size>& instance() {
         static MemoryPool<object_type, block_size> instance_;
         return instance_;
     }
 
-    object_type *allocate_block() {
-        Block *block = block_allocator::allocate(1);
+    object_type* allocate_block() {
+        Block* block = block_allocator::allocate(1);
 
         if (!last_block_ && !first_block_) {
             first_block_ = block;
@@ -150,7 +150,7 @@ class MemoryPool {
         /* reserve the necesary size to represent a new block */
         free_.reserve(free_.size() + block_size);
 
-        for (object_type *i = block->data_; i < block->data_ + block_size; i++)
+        for (object_type* i = block->data_; i < block->data_ + block_size; i++)
             free_.push(i);
 
         free_.sort();
@@ -161,15 +161,15 @@ class MemoryPool {
     void cleanup() {
         Log::progress("debug", "Cleaning up the memory pool");
 
-        Block *block = first_block_;
+        Block* block = first_block_;
 
-        for (auto &object : *this) {
+        for (auto& object : *this) {
             object.~object_type();
             this->deallocate(&object);
         }
 
         do {
-            Block *next = block->next_;
+            Block* next = block->next_;
             block_allocator::deallocate(block);
             block = next;
 
@@ -182,13 +182,13 @@ class MemoryPool {
 
     ~MemoryPool() { cleanup(); }
 
-    bool is_free(object_type *object) {
+    bool is_free(object_type* object) {
         return std::binary_search(free_.begin(), free_.end(), object,
-                                  std::greater<object_type *>());
+                                  std::greater<object_type*>());
     }
 
-    Block *get_block(object_type *object) {
-        Block *block = first_block_;
+    Block* get_block(object_type* object) {
+        Block* block = first_block_;
 
         do {
             if (object >= &block->data_[0] &&
@@ -202,12 +202,12 @@ class MemoryPool {
 
     class Iterator {
        private:
-        object_type *current_;
-        Block *current_block_;
-        MemoryPool<object_type> &pool_;
+        object_type* current_;
+        Block* current_block_;
+        MemoryPool<object_type>& pool_;
 
        public:
-        Iterator(MemoryPool<object_type> &pool, object_type *pos)
+        Iterator(MemoryPool<object_type>& pool, object_type* pos)
             : current_(pos), pool_(pool) {
             current_block_ = pool_.get_block(current_);
         }
@@ -235,27 +235,27 @@ class MemoryPool {
             }
         }
 
-        const bool operator==(const Iterator &rhs) const {
+        const bool operator==(const Iterator& rhs) const {
             return current_ == rhs.current_;
         }
 
-        const bool operator!=(const Iterator &rhs) const {
+        const bool operator!=(const Iterator& rhs) const {
             return current_ != rhs.current_;
         }
 
-        Iterator &operator++() {
+        Iterator& operator++() {
             this->next();
             return *this;
         }
 
-        object_type &operator*() { return *current_; }
+        object_type& operator*() { return *current_; }
 
-        object_type *operator->() { return current_; }
+        object_type* operator->() { return current_; }
 
         friend MemoryPool;
     };
 
-    object_type *end_ptr() { return &last_block_->data_[block_size]; }
+    object_type* end_ptr() { return &last_block_->data_[block_size]; }
 
     Iterator begin() {
         Iterator it(*this, &first_block_->data_[0]);
@@ -265,27 +265,27 @@ class MemoryPool {
 
     Iterator end() { return Iterator(*this, end_ptr()); }
 
-    Stack<object_type *> &get_free() { return free_; }
+    Stack<object_type*>& get_free() { return free_; }
 
     const size_t size() { return size_; }
 
    private:
     MemoryPool() : first_block_(nullptr), last_block_(nullptr), size_(0) {}
 
-    Block *first_block_;
-    Block *last_block_;
-    Stack<object_type *> free_;
+    Block* first_block_;
+    Block* last_block_;
+    Stack<object_type*> free_;
     size_t size_;
 };
 
 #define MEMORY_POOL(object_type)                                               \
-    void *operator new(size_t size) {                                          \
-        object_type *ptr = MemoryPool<object_type>::instance().allocate(size); \
+    void* operator new(size_t size) {                                          \
+        object_type* ptr = MemoryPool<object_type>::instance().allocate(size); \
         return ptr;                                                            \
     }                                                                          \
-    void operator delete(void *ptr) {                                          \
+    void operator delete(void* ptr) {                                          \
         MemoryPool<object_type>::instance().deallocate(                        \
-            static_cast<object_type *>(ptr));                                  \
+            static_cast<object_type*>(ptr));                                   \
     }
 }
 

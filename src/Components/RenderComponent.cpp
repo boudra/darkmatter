@@ -8,15 +8,15 @@
 
 namespace dm {
 
-void Render2d::set_transform(const Matrix4f &matrix) {
+void Render2d::set_transform(const Matrix4f& matrix) {
     transform = matrix;
-    for (auto &s : sprites) s.second->transform = matrix;
+    for (auto& s : sprites) s.second->transform = matrix;
 }
 
-Sprite &Render2d::add_sprite(const std::string &name, const Vec3f &position,
-                             const Vec2f &size, const size_t &texture,
-                             const Vec4i &color) {
-    Sprite *sprite = new Sprite();
+Sprite& Render2d::add_sprite(const std::string& name, const Vec3f& position,
+                             const Vec2f& size, const size_t& texture,
+                             const Vec4i& color) {
+    Sprite* sprite = new Sprite();
     sprites[name] = sprite;
     sprite->name = name;
 
@@ -35,8 +35,8 @@ Sprite &Render2d::add_sprite(const std::string &name, const Vec3f &position,
 }
 
 void Render2d::update_bounding_box() {
-    for (auto &vk : sprites) {
-        Sprite &s = *vk.second;
+    for (auto& vk : sprites) {
+        Sprite& s = *vk.second;
 
         position.x = std::min(position.x, s.position.x);
         position.y = std::min(position.y, s.position.y);

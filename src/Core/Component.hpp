@@ -31,7 +31,7 @@ struct ComponentBase {
     ComponentBase() {}
     virtual ~ComponentBase() {}
 
-    Entity *parent;
+    Entity* parent;
     uint32_t id;
     uint32_t type_id;
 };

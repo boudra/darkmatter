@@ -7,11 +7,11 @@
 
 namespace dm {
 
-AnimationSystem *AnimationComponent::s_animations = nullptr;
+AnimationSystem* AnimationComponent::s_animations = nullptr;
 
-size_t AnimationComponent::animate(const std::string &name, const float speed,
+size_t AnimationComponent::animate(const std::string& name, const float speed,
                                    const bool loop,
-                                   std::function<void(Entity *)> callback) {
+                                   std::function<void(Entity*)> callback) {
     size_t animation_id =
         s_animations->start_animation(name, speed, loop, callback);
     animations.emplace_back(animation_id);

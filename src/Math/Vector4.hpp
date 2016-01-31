@@ -11,23 +11,23 @@ class Vec4Base {
     Vec4Base() : x(0), y(0), z(0), w(0) {}
     Vec4Base(T x) : x(x), y(x), z(x), w(x) {}
     Vec4Base(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {}
-    Vec4Base(const Vec4Base<T> &other)
+    Vec4Base(const Vec4Base<T>& other)
         : x(other.x), y(other.y), z(other.z), w(other.w) {}
 
-    const Vec4Base<T> operator+(const Vec4Base<T> &other) const {
+    const Vec4Base<T> operator+(const Vec4Base<T>& other) const {
         return Vec4Base<T>(x + other.x, y + other.y, z + other.z, w + other.w);
     }
 
-    const Vec4Base<T> operator-(const Vec4Base<T> &other) const {
+    const Vec4Base<T> operator-(const Vec4Base<T>& other) const {
         return Vec4Base<T>(x - other.x, y - other.y, z - other.z, w - other.w);
     }
 
     template <typename U>
-    const Vec4Base<T> operator*(const U &rhs) const {
+    const Vec4Base<T> operator*(const U& rhs) const {
         return Vec4Base<T>(x * rhs, y * rhs, z * rhs, w * rhs);
     }
 
-    const Vec4Base<T> &operator=(const Vec4Base<T> &other) {
+    const Vec4Base<T>& operator=(const Vec4Base<T>& other) {
         x = other.x;
         y = other.y;
         z = other.z;
@@ -45,19 +45,19 @@ class Vec4Base {
         return Vec4Base<U>(x * value, y * value, z * value, w * value);
     }
 
-    const Vec4Base<T> &operator+=(const Vec4Base<T> &other) {
-        return *this = *this + other;
+    const Vec4Base<T>& operator+=(const Vec4Base<T>& other) {
+        return * this = *this + other;
     }
 
-    inline friend std::ostream &operator<<(std::ostream &stream,
-                                           const Vec4Base<T> &vec) {
+    inline friend std::ostream& operator<<(std::ostream& stream,
+                                           const Vec4Base<T>& vec) {
         return stream << '{' << vec.x << ',' << vec.y << ',' << vec.z << ','
                       << vec.w << '}';
     }
 
     const float length() const { return sqrt(x * x + y * y + z * z + w * w); }
 
-    const Vec4Base<T> &normalize() { return *this = *this / length(); }
+    const Vec4Base<T>& normalize() { return * this = *this / length(); }
 
     T x, y, z, w;
 };

@@ -17,7 +17,7 @@ class JsonReader {
     JsonNode ParseObject();
     JsonNode ParseArray();
 
-    void PrintError(const std::string &message);
+    void PrintError(const std::string& message);
 
     inline const bool EndOfFile() const { return m_data >= m_end; }
 
@@ -28,23 +28,23 @@ class JsonReader {
             m_data++;
     }
 
-    inline void SkipUntil(const char &c) {
+    inline void SkipUntil(const char& c) {
         while (*m_data != c && !EndOfFile()) m_data++;
     }
 
-    void PrettyPrint(JsonNode *node);
+    void PrettyPrint(JsonNode* node);
 
-    JsonNode Parse(const char *filename);
-    JsonNode Parse(std::ifstream &file);
+    JsonNode Parse(const char* filename);
+    JsonNode Parse(std::ifstream& file);
 
     virtual ~JsonReader() {}
 
    private:
     size_t m_size;
 
-    char *m_data;
-    char *m_start;
-    char *m_end;
+    char* m_data;
+    char* m_start;
+    char* m_end;
 };
 }
 

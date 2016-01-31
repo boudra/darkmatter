@@ -9,10 +9,10 @@ class Quaternion {
    public:
     Quaternion() : x(0), y(0), z(0), w(1.f) {}
     Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
-    Quaternion(const Quaternion &other)
+    Quaternion(const Quaternion& other)
         : x(other.x), y(other.y), z(other.z), w(other.w) {}
 
-    const Quaternion &operator=(const Quaternion &other) {
+    const Quaternion& operator=(const Quaternion& other) {
         x = other.x;
         y = other.y;
         z = other.z;
@@ -20,7 +20,7 @@ class Quaternion {
         return *this;
     }
 
-    const Quaternion operator*(const Quaternion &other) const {
+    const Quaternion operator*(const Quaternion& other) const {
         return Quaternion(
             (other.w * x) + (other.x * w) + (other.y * z) - (other.z * y),
             (other.w * y) + (other.y * w) + (other.z * x) - (other.x * z),
@@ -28,11 +28,11 @@ class Quaternion {
             (other.w * w) - (other.x * x) - (other.y * y) - (other.z * z));
     }
 
-    const Quaternion &operator*=(const Quaternion &other) {
-        return *this = *this * other;
+    const Quaternion& operator*=(const Quaternion& other) {
+        return * this = *this * other;
     }
 
-    const Quaternion &rotate(float angle, const Vec3f &axis) {
+    const Quaternion& rotate(float angle, const Vec3f& axis) {
         const float half = 0.5f * angle;
         const float sin = sinf(half);
         w = cosf(half);
@@ -42,7 +42,7 @@ class Quaternion {
         return *this;
     }
 
-    void get_matrix(Matrix4f &matrix) const {
+    void get_matrix(Matrix4f& matrix) const {
         float qxx(x * x);
         float qyy(y * y);
         float qzz(z * z);
@@ -77,7 +77,7 @@ class Quaternion {
         matrix[15] = 1.0f;
     }
 
-    void set_matrix(Matrix4f &matrix) const {
+    void set_matrix(Matrix4f& matrix) const {
         float qxx(x * x);
         float qyy(y * y);
         float qzz(z * z);

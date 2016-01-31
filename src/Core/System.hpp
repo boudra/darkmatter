@@ -19,9 +19,9 @@ class EventDispatcher;
 
 class SystemBase {
    public:
-    SystemBase(const std::string &name) : SystemBase(name, {}, {}) {}
+    SystemBase(const std::string& name) : SystemBase(name, {}, {}) {}
 
-    SystemBase(const std::string &name,
+    SystemBase(const std::string& name,
                std::initializer_list<uint32_t> dependencies,
                std::initializer_list<uint32_t> managed)
         : m_enabled(false),
@@ -41,12 +41,12 @@ class SystemBase {
     virtual bool initialize() = 0;
     virtual void component_added(const uint32_t componentType, Entity e) {}
 
-    const std::string &name() { return m_name; }
+    const std::string& name() { return m_name; }
 
    protected:
-    static EntityManager *s_entities;
-    static Engine *s_engine;
-    static EventDispatcher *s_dispatcher;
+    static EntityManager* s_entities;
+    static Engine* s_engine;
+    static EventDispatcher* s_dispatcher;
 
     bool m_enabled;
 
@@ -63,7 +63,7 @@ class SystemBase {
 
     friend class Engine;
 
-    static uint32_t &counter() {
+    static uint32_t& counter() {
         static uint32_t counter = 0;
         return counter;
     }

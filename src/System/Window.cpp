@@ -21,20 +21,20 @@ Window::Window()
 
 Window::~Window() {}
 
-SDL_Window *Window::handle() { return sdl_window; }
+SDL_Window* Window::handle() { return sdl_window; }
 
 bool Window::create() {
     return this->create(DEFAULT_CAPTION, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 }
 
-bool Window::create(const char *caption) {
+bool Window::create(const char* caption) {
     return this->create(caption, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 }
 
 /*
 Create the window using SDL2
 */
-bool Window::create(const char *caption, int width, int height) {
+bool Window::create(const char* caption, int width, int height) {
     SDL_Init(SDL_INIT_VIDEO);
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);

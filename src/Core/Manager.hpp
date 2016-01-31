@@ -14,10 +14,10 @@ class ManagerBase {
    protected:
     friend class Engine;
 
-    static EventDispatcher *s_dispatcher;
-    static Engine *s_engine;
+    static EventDispatcher* s_dispatcher;
+    static Engine* s_engine;
 
-    static ManagerId &counter() {
+    static ManagerId& counter() {
         static ManagerId counter = 0;
         return counter;
     }

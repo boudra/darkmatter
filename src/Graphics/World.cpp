@@ -18,11 +18,11 @@
 
 namespace dm {
 
-void debug_mesh(World::Mesh &mesh) {
+void debug_mesh(World::Mesh& mesh) {
     for (size_t i = 0; i < mesh.indices.size(); i += 3) {
-        const unsigned int &index = mesh.indices[i];
-        const unsigned int &index1 = mesh.indices[i + 1];
-        const unsigned int &index2 = mesh.indices[i + 2];
+        const unsigned int& index = mesh.indices[i];
+        const unsigned int& index1 = mesh.indices[i + 1];
+        const unsigned int& index2 = mesh.indices[i + 2];
     }
 }
 
@@ -47,7 +47,7 @@ bool find_common_side(const uint32_t a[3], const uint32_t b[3],
     return (next == 2);
 }
 
-void triangulate(World::Mesh &mesh) {
+void triangulate(World::Mesh& mesh) {
     std::vector<uint32_t> indices;
     std::vector<uint32_t> done;
 
@@ -199,9 +199,9 @@ bool World::initialize() {
     return true;
 }
 
-void unlock_body(Entity *e) { e->component<BodyComponent>().lock = false; }
+void unlock_body(Entity* e) { e->component<BodyComponent>().lock = false; }
 
-bool World::move(BodyComponent &body, int x, int y) {
+bool World::move(BodyComponent& body, int x, int y) {
     if (!m_map(body.position.x + x, body.position.y + y).free) {
         return false;
     }
@@ -215,10 +215,10 @@ void World::component_added(const uint32_t component_type, Entity e) {
     // {20,20});
 }
 
-void World::set_position(BodyComponent &body, int x, int y) {
+void World::set_position(BodyComponent& body, int x, int y) {
     if (!body.ghost) {
-        Tile &last_position = m_map(body.position);
-        Tile &new_position = m_map(x, y);
+        Tile& last_position = m_map(body.position);
+        Tile& new_position = m_map(x, y);
 
         last_position.free = true;
         last_position.entity = nullptr;
@@ -244,12 +244,12 @@ Vec3f World::real_position(Vec2i position, Vec3f size) {
 }
 
 void World::update() {
-    auto &bodies = COMPONENTS(BodyComponent);
-    auto &cursors = COMPONENTS(Cursor);
+    auto& bodies = COMPONENTS(BodyComponent);
+    auto& cursors = COMPONENTS(Cursor);
 
-    for (auto &body : bodies) {
-        Entity *e = body.parent;
-        AnimationComponent *animation =
+    for (auto& body : bodies) {
+        Entity* e = body.parent;
+        AnimationComponent* animation =
             e->has_component<AnimationComponent>()
                 ? &e->component<AnimationComponent>()
                 : nullptr;
@@ -302,7 +302,7 @@ void World::update() {
                 case Command::Type::GO_TO: {
                     const Vec2i destination = command.data.Cast<Vec2i>();
                     const Vec2i diff = destination - body.position;
-                    const Vec2i &pos = body.position;
+                    const Vec2i& pos = body.position;
 
                     if ((diff.x == 0 && diff.y == 0) ||
                         !m_map(destination).free) {
@@ -377,18 +377,18 @@ void World::update() {
         }
 
         if (body.dirty && body.parent->has_component<PhysicsComponent>()) {
-            auto &physics = body.parent->component<PhysicsComponent>();
+            auto& physics = body.parent->component<PhysicsComponent>();
             physics.position = this->real_position(body.position, physics.size);
             this->set_position(body, body.position.x, body.position.y);
             body.dirty = false;
         }
     }
 
-    for (auto &cursor : cursors) {
-        Entity *selected = cursor.selected;
+    for (auto& cursor : cursors) {
+        Entity* selected = cursor.selected;
         if (!selected) continue;
-        auto &cursor_physics = cursor.parent->component<PhysicsComponent>();
-        auto &selected_physics = selected->component<PhysicsComponent>();
+        auto& cursor_physics = cursor.parent->component<PhysicsComponent>();
+        auto& selected_physics = selected->component<PhysicsComponent>();
         cursor_physics.size = Vec3f(selected_physics.size.x);
         Vec3f relative =
             selected_physics.size * 0.5f - cursor_physics.size * 0.5f;

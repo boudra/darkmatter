@@ -23,7 +23,7 @@ Font::Font() {
 
 Font::~Font() {}
 
-bool Font::load(Texture &texture, const char *name, const int size) {
+bool Font::load(Texture& texture, const char* name, const int size) {
     FT_Face face;
 
     int atlaswidth = 0, atlasheight = 0;
@@ -60,7 +60,7 @@ bool Font::load(Texture &texture, const char *name, const int size) {
 
     texture.setup();
 
-    unsigned char *data = new unsigned char[atlaswidth * atlasheight];
+    unsigned char* data = new unsigned char[atlaswidth * atlasheight];
     memset(data, 0, atlaswidth * atlasheight);
     texture.set_data(data);
 

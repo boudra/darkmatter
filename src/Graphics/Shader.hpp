@@ -27,14 +27,14 @@ class ProgramShader {
     bool link();
     void unload_shaders();
     void bind();
-    bool load(const char *filename, Shader::Type type);
+    bool load(const char* filename, Shader::Type type);
 
     /* GLSL Uniform setters */
-    void set_uniform(int value, const char *name);
-    void set_uniform(float value, const char *name);
-    void set_uniform(const Matrix4f &value, const char *name);
-    void set_uniform(const Vec3f &value, const char *name);
-    void set_uniform(const Vec2f &value, const char *name);
+    void set_uniform(int value, const char* name);
+    void set_uniform(float value, const char* name);
+    void set_uniform(const Matrix4f& value, const char* name);
+    void set_uniform(const Vec3f& value, const char* name);
+    void set_uniform(const Vec2f& value, const char* name);
 
    private:
     bool m_linked;

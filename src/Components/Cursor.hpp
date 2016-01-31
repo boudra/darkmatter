@@ -6,7 +6,7 @@
 namespace dm {
 
 dm_start_component(Cursor);
-Entity *selected = nullptr;
+Entity* selected = nullptr;
 dm_end_component(Cursor);
 
 } /* namespace dm */

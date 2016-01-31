@@ -52,14 +52,14 @@ struct KeyboardEvent : Event {
 };
 
 struct MouseEvent : Event {
-    MouseEvent(const Vec2f &position,
+    MouseEvent(const Vec2f& position,
                const EventType type = EventType::MOUSE_MOTION)
         : Event(type), position(position) {}
     Vec2f position;
 };
 
 struct MouseWheelEvent : Event {
-    MouseWheelEvent(const Vec2i &delta,
+    MouseWheelEvent(const Vec2i& delta,
                     const EventType type = EventType::MOUSE_WHEEL)
         : Event(type), delta(delta) {}
     Vec2i delta;

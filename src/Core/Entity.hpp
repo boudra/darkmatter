@@ -16,17 +16,17 @@ class Entity {
     Entity() {}
 
     template <class ComponentType>
-    ComponentType &component() {
+    ComponentType& component() {
         assert(has_component<ComponentType>());
         return *(
-            static_cast<ComponentType *>(components[COMPONENT(ComponentType)]));
+            static_cast<ComponentType*>(components[COMPONENT(ComponentType)]));
     }
 
     template <class ComponentType>
-    ComponentType &assign() {
-        ComponentType *component = new ComponentType();
+    ComponentType& assign() {
+        ComponentType* component = new ComponentType();
         components[COMPONENT(ComponentType)] =
-            static_cast<ComponentBase *>(component);
+            static_cast<ComponentBase*>(component);
         component->parent = this;
         return *component;
     }
@@ -42,7 +42,7 @@ class Entity {
         return components.find(COMPONENT(ComponentType)) != components.end();
     }
 
-    bool load_from(const char *);
+    bool load_from(const char*);
 
     void reset() {}
 
@@ -52,7 +52,7 @@ class Entity {
     }
 
    private:
-    std::map<uint32_t, ComponentBase *> components;
+    std::map<uint32_t, ComponentBase*> components;
 
     bool _valid;
 };
@@ -61,24 +61,24 @@ dm_internal_register_type_name(Entity, "Entity");
 
 /* Event defining an added component */
 struct ComponentAddedEvent : Event {
-    ComponentAddedEvent(const uint32_t type, const Entity *entity)
+    ComponentAddedEvent(const uint32_t type, const Entity* entity)
         : Event(EventType::COMPONENT_ADDED),
           component_type(type),
           entity(entity) {}
 
     const uint32_t component_type;
-    const Entity *entity;
+    const Entity* entity;
 };
 
 /* Event defining a removed component */
 struct ComponentRemovedEvent : Event {
-    ComponentRemovedEvent(const uint32_t type, const Entity *entity)
+    ComponentRemovedEvent(const uint32_t type, const Entity* entity)
         : Event(EventType::COMPONENT_REMOVED),
           component_type(type),
           entity(entity) {}
 
     const uint32_t component_type;
-    const Entity *entity;
+    const Entity* entity;
 };
 
 } /* namespace dm */

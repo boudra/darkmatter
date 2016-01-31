@@ -30,7 +30,7 @@ struct Sprite {
     Vec3f rotation_origin;
     Vec3f scale_origin;
     size_t texture = 0;
-    ProgramShader *shader = nullptr;
+    ProgramShader* shader = nullptr;
     std::string name = "";
 
     void FlipVertical() {
@@ -47,17 +47,17 @@ struct Sprite {
 
 dm_start_component(Render2d);
 
-void set_transform(const Matrix4f &matrix);
+void set_transform(const Matrix4f& matrix);
 
-Sprite &add_sprite(const std::string &name, const Vec3f &position,
-                   const Vec2f &size, const size_t &texture,
-                   const Vec4i &color = Color::White);
+Sprite& add_sprite(const std::string& name, const Vec3f& position,
+                   const Vec2f& size, const size_t& texture,
+                   const Vec4i& color = Color::White);
 
 void update_bounding_box();
 
-Sprite &get_sprite(const std::string &name) { return *(sprites[name]); }
+Sprite& get_sprite(const std::string& name) { return *(sprites[name]); }
 
-bool has_sprite(const std::string &name) {
+bool has_sprite(const std::string& name) {
     return sprites.find(name) != sprites.end();
 }
 
@@ -74,7 +74,7 @@ Vec3f position;
 bool shadow;
 bool billboard;
 
-std::map<std::string, Sprite *> sprites;
+std::map<std::string, Sprite*> sprites;
 
 dm_end_component(Render2d);
 }

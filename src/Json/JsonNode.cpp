@@ -2,7 +2,7 @@
 
 namespace dm {
 
-JsonNode &JsonNode::operator[](const std::string &name) {
+JsonNode& JsonNode::operator[](const std::string& name) {
     auto it = m_elements.lower_bound(name);
 
     if (it != m_elements.end() && it->first == name) return it->second;
@@ -14,7 +14,7 @@ JsonNode &JsonNode::operator[](const std::string &name) {
     return it->second;
 }
 
-JsonNode &JsonNode::operator[](const size_t index) {
+JsonNode& JsonNode::operator[](const size_t index) {
     std::string index_str = std::to_string(index);
     auto it = m_elements.lower_bound(index_str);
 

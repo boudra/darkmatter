@@ -30,7 +30,7 @@ enum class Direction { LEFT, UP, RIGHT, DOWN };
 struct Tile {
     bool free = true;
     TileType type;
-    Entity *entity = nullptr;
+    Entity* entity = nullptr;
 };
 
 dm_start_component(BodyComponent);
@@ -43,7 +43,7 @@ bool lock;
 bool ghost = false;
 Direction direction = Direction::RIGHT;
 
-void execute(const Command::Type &type, const Any &data = nullptr,
+void execute(const Command::Type& type, const Any& data = nullptr,
              const std::function<void()> callback = nullptr) {
     commands.push({type, data, callback});
 }

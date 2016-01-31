@@ -34,19 +34,19 @@ class VertexObject {
     void set_divisor(unsigned int location, unsigned int divisor);
 
     void release_buffers() {
-        for (BufferObject &buffer : m_buffers) buffer.release();
+        for (BufferObject& buffer : m_buffers) buffer.release();
     }
 
-    BufferObject &get_buffer(const size_t index) { return m_buffers[index]; }
+    BufferObject& get_buffer(const size_t index) { return m_buffers[index]; }
 
-    BufferObject &get_bufer_location(const size_t location) {
+    BufferObject& get_bufer_location(const size_t location) {
         return m_buffers[m_locations[location]];
     }
 
     template <class ValueType>
     size_t add_buffer(const BufferObject::Type type, const unsigned int size) {
         m_buffers.emplace_back(size, sizeof(ValueType), type);
-        BufferObject &buffer = m_buffers.back();
+        BufferObject& buffer = m_buffers.back();
         buffer.create();
         return m_buffers.size() - 1;
     }
