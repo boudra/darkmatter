@@ -42,6 +42,7 @@ void InputSystem::update() {
                 Vec2i mouse_position;
                 Vec2f mouse_transformed;
                 SDL_GetMouseState(&mouse_position.x, &mouse_position.y);
+                Log::debug("Mouse: %s", mouse_position);
                 mouse_transformed.x = mouse_position.x * m_mouse_transform.x;
                 mouse_transformed.y =
                     (m_window_size.y - mouse_position.y) * m_mouse_transform.y;

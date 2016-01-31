@@ -7,6 +7,7 @@
 #include <memory>
 #include <cassert>
 #include <cstring>
+#include <thread>
 
 #include "Core/Logger.hpp"
 #include "TypeId/TypeId.hpp"
@@ -131,6 +132,11 @@ class MemoryPool {
     static MemoryPool<object_type, block_size>& instance() {
         static MemoryPool<object_type, block_size> instance_;
         return instance_;
+    }
+
+    static std::mutex& mutex() {
+        static MemoryPool<object_type, block_size> instance_;
+        return instance_.mut_;
     }
 
     object_type* allocate_block() {
@@ -270,12 +276,13 @@ class MemoryPool {
     const size_t size() { return size_; }
 
    private:
-    MemoryPool() : first_block_(nullptr), last_block_(nullptr), size_(0) {}
+    MemoryPool() : first_block_(nullptr), last_block_(nullptr), size_(0), mut_() {}
 
     Block* first_block_;
     Block* last_block_;
     Stack<object_type*> free_;
     size_t size_;
+    std::mutex mut_;
 };
 
 #define MEMORY_POOL(object_type)                                               \

@@ -27,6 +27,7 @@ void PhysicsSystem::update() {
     int cnt = 0;
 
     for (PhysicsComponent& c : components) {
+        // Log::debug("updating... %d", cnt);
         c.velocity += (c.acceleration / c.mass);
         c.velocity *= c.friction;
 
