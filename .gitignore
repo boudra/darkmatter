@@ -1,4 +1,7 @@
-/build/*
-/bin/*
+/lib
 /thirdparty
-
+/CMakeFiles
+/Makefile
+/CMakeCache.txt
+/cmake_install.cmake
+/compile_commands.json

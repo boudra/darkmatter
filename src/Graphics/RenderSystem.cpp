@@ -299,7 +299,7 @@ namespace dm {
     animation->register_animation("data/animations/item_idle.json");
     animation->register_animation("data/animations/idle.json");
     animation->register_animation("data/animations/running.json");
-    animation->register_animation("data/animations/running_shadow.json");
+    // animation->register_animation("data/animations/running_shadow.json");
 
     GET_MANAGER(ResourceManager)->load_texture("data/cursor.png");
     // GET_MANAGER(ResourceManager)->load_texture("data/selected.png");
