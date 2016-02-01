@@ -60,13 +60,6 @@ void ProgramShader::bind() {
 }
 
 bool ProgramShader::load(const char* filename, Shader::Type type) {
-    assert(m_linked == false);
-
-    /* Create the program */
-    if (m_id == 0) {
-        m_id = glCreateProgram();
-    }
-
     int size = 0;
     char* data = nullptr;
     std::ifstream file(filename, std::ios::in);
@@ -102,6 +95,13 @@ bool ProgramShader::load(const char* filename, Shader::Type type) {
 
 bool ProgramShader::load_source(const char* data, Shader::Type type) {
 
+    assert(m_linked == false);
+
+    /* Create the program */
+    if (m_id == 0) {
+        m_id = glCreateProgram();
+    }
+
     if (m_shaders.size() <= type) {
         m_shaders.resize(type + 1);
     }
@@ -124,11 +124,8 @@ bool ProgramShader::load_source(const char* data, Shader::Type type) {
     }
 
     const GLchar* source = static_cast<const GLchar*>(data);
-    Log::info(data);
-    // const int sizei = static_cast<const int>(strlen(data));
 
-    glShaderSource(shader.id, 1, static_cast<const GLchar**>(&source),
-                   NULL);
+    glShaderSource(shader.id, 1, static_cast<const GLchar**>(&source), NULL);
     glCompileShader(shader.id);
 
     GLint compiled = 0;
