@@ -28,6 +28,7 @@ class ProgramShader {
     void unload_shaders();
     void bind();
     bool load(const char* filename, Shader::Type type);
+    bool load_source(const char* source, Shader::Type type);
 
     /* GLSL Uniform setters */
     void set_uniform(int value, const char* name);

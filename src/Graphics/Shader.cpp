@@ -80,7 +80,7 @@ bool ProgramShader::load(const char* filename, Shader::Type type) {
     size = file.tellg();
     file.seekg(0, std::ios::beg);
 
-    data = new char[size];
+    data = new char[size+1];
 
     file.read(data, size);
 
@@ -91,6 +91,16 @@ bool ProgramShader::load(const char* filename, Shader::Type type) {
     }
 
     file.close();
+
+    Log::progress("debug", "Compiling shader %s", filename);
+
+    data[size] = '\0';
+    const bool result = this->load_source((const char*)data, type);
+    delete[] data;
+    return result;
+}
+
+bool ProgramShader::load_source(const char* data, Shader::Type type) {
 
     if (m_shaders.size() <= type) {
         m_shaders.resize(type + 1);
@@ -113,16 +123,13 @@ bool ProgramShader::load(const char* filename, Shader::Type type) {
         return false;
     }
 
-    Log::progress("debug", "Compiling shader %s", filename);
-
     const GLchar* source = static_cast<const GLchar*>(data);
-    const int sizei = static_cast<const int>(size);
+    Log::info(data);
+    // const int sizei = static_cast<const int>(strlen(data));
 
     glShaderSource(shader.id, 1, static_cast<const GLchar**>(&source),
-                   static_cast<const GLint*>(&sizei));
+                   NULL);
     glCompileShader(shader.id);
-
-    delete[] data;
 
     GLint compiled = 0;
     glGetShaderiv(shader.id, GL_COMPILE_STATUS, &compiled);

@@ -172,7 +172,6 @@ bool RenderSystem::initialize() {
     m_sprite_batch.set_default_shader(&m_main_shader);
 
     m_projection.identity();
-    // m_projection.perspective(1280.0f / 720.0f, 0.1f, 100.0f, 1.0f);
     m_projection.ortho({{-0.2f, -0.2f * 0.5625f}, Vec2f{0.2f, 0.2f * 0.5625f}},
                        {-1.0f, 100.0f});
 
