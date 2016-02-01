@@ -16,6 +16,41 @@
 
 namespace dm {
 
+const char* font_frag = R"(
+#version 330
+
+uniform sampler2D u_sampler;
+
+out vec4 o_color;
+in vec2 s_texture_coord;
+in vec4 s_color;
+
+void main() {
+   o_color = s_color * vec4(1.0, 1.0, 1.0, texture(u_sampler, s_texture_coord).r);
+   if(o_color.a < 0.5) discard;
+}
+)";
+
+const char* font_vert = R"(
+#version 330
+
+layout (location = 0) in vec3 l_vertex;
+layout (location = 1) in vec4 l_color;
+layout (location = 2) in vec2 l_texture;
+
+uniform mat4 u_projection_matrix;
+uniform mat4 u_view_matrix;
+
+out vec2 s_texture_coord;
+out vec4 s_color;
+
+void main() {
+   s_texture_coord = l_texture;
+   s_color = l_color;
+   gl_Position = u_projection_matrix * vec4(l_vertex, 1.0);
+}
+)";
+
 SpriteBatch::SpriteBatch() {}
 
 SpriteBatch::~SpriteBatch() {}
@@ -46,10 +81,9 @@ bool SpriteBatch::initialize(ResourceManager* resource_manager) {
 
     m_ortho.ortho({{0.0f, 0.0f}, {1280.0f, 720.0f}}, {-1.0f, 100.0f});
 
-    m_font_shader.load("data/shaders/font_vertex.glsl",
-                       dm::Shader::Type::Vertex);
-    m_font_shader.load("data/shaders/font_frag.glsl",
-                       dm::Shader::Type::Fragment);
+    m_font_shader.load_source(font_vert, dm::Shader::Type::Vertex);
+    m_font_shader.load_source(font_frag, dm::Shader::Type::Fragment);
+
     m_font_shader.link();
 
     m_font_shader.bind();
