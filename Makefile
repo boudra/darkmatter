@@ -7,9 +7,3 @@ all: ./build/Makefile
 
 clean:
 	rm -rf build/*
-
-.PHONY:
-	echo $@
-
-%.cpp:
-	echo $@
