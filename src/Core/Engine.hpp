@@ -85,13 +85,13 @@ inline bool Engine::load_manager() {
 }
 template <class SystemType>
 inline SystemType* Engine::system() {
-    assert(m_systems.size() > SYSTEM(SystemType));
+    assert(m_systems.size() > SYSTEM(SystemType), "System not found");
     return static_cast<SystemType*>(m_systems[SYSTEM(SystemType)]);
 }
 
 template <class ManagerType>
 inline ManagerType* Engine::manager() {
-    assert(m_managers.size() > ManagerType::id());
+    assert(m_managers.size() > ManagerType::id(), "Manager not found");
     return static_cast<ManagerType*>(m_managers[ManagerType::id()]);
 }
 

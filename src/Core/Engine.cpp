@@ -27,8 +27,6 @@ Engine::Engine() : m_window(nullptr), m_exit(false) {}
 Engine::~Engine() {}
 
 bool Engine::initialize() {
-    gettimeofday(&Log::begin, NULL);
-
     Log::info("Starting engine");
 
     ManagerBase::s_engine = this;

@@ -99,7 +99,7 @@ class Vec2 {
 
     inline const Vec2<T> normalize() const {
         float l = length();
-        assert(l > 0.0f || l < 0.0f);
+        assert(l > 0.0f || l < 0.0f, "Length is zero");
         return (*this / l);
     }
 

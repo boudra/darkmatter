@@ -5,7 +5,6 @@
 #include <cstdint>
 #include <chrono>
 #include <memory>
-#include <cassert>
 #include <cstring>
 #include <thread>
 
@@ -167,10 +166,9 @@ class MemoryPool {
         Log::progress("debug", "Cleaning up the memory pool for %s",
                       dm_type_name(object_type));
 
-        assert(dm_type_name(object_type) != dm_type_name(size_t));
         Block* block = first_block_;
 
-        assert(first_block_ != nullptr);
+        assert(first_block_ != nullptr, "MemoryPool already freed");
 
         for (auto& object : *this) {
             object.~object_type();
@@ -183,7 +181,7 @@ class MemoryPool {
             block = next;
         } while (block != first_block_);
 
-        assert(size_ == 0);
+        assert(size_ == 0, "MemoryPool not freed properly");
 
         first_block_ = nullptr;
 
@@ -207,7 +205,7 @@ class MemoryPool {
             block = block->next_;
         } while (block != first_block_);
 
-        assert(!"Object not in pool");
+        assert(false, "Object not in pool");
 
         return nullptr;
     }

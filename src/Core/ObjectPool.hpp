@@ -59,7 +59,7 @@ class ObjectPool {
     }
 
     value_type& operator[](const size_t& id) {
-        assert(id >= 0 && id < m_objects.size());
+        assert(id >= 0 && id < m_objects.size(), "Index out of bounds");
         return m_objects[id];
     }
 

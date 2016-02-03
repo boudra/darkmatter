@@ -18,7 +18,7 @@ GLenum primitive_type(const VertexObject::Primitive type) {
         case VertexObject::Primitive::UnsignedByte:
             return GL_UNSIGNED_BYTE;
         default:
-            assert(false);
+            assert(false, "Unknown primitive type");
     }
 }
 
@@ -31,7 +31,7 @@ VertexObject::~VertexObject() {
 }
 
 unsigned int VertexObject::create() {
-    assert(m_id == 0);
+    assert(m_id == 0, "VertexObject already created");
     glGenVertexArrays(1, &m_id);
     return m_id;
 }
@@ -42,13 +42,13 @@ void VertexObject::destroy() {
 }
 
 void VertexObject::bind() {
-    assert(!m_bound);
+    assert(!m_bound, "VertexObject already bound");
     glBindVertexArray(m_id);
     m_bound = true;
 }
 
 void VertexObject::release() {
-    assert(m_bound);
+    assert(m_bound, "VertexObject not bound");
     glBindVertexArray(0);
     m_bound = false;
 }
@@ -56,7 +56,7 @@ void VertexObject::release() {
 void VertexObject::add_attribute(size_t buffer, unsigned int location,
                                  unsigned int count, Primitive valueType,
                                  unsigned int stride, unsigned int offset) {
-    assert(m_buffers.size() > buffer && m_bound);
+    assert(m_buffers.size() > buffer && m_bound, "Unknown buffer");
 
     glVertexAttribPointer(location, count, primitive_type(valueType), GL_FALSE,
                           stride, (GLvoid*)(uintptr_t)offset);
@@ -70,7 +70,7 @@ void VertexObject::add_attribute(size_t buffer, unsigned int location,
 }
 
 void VertexObject::set_divisor(unsigned int location, unsigned int divisor) {
-    assert(m_bound);
+    assert(m_bound, "VertexObject not bound");
     glVertexAttribDivisor(location, 1);
 }
 

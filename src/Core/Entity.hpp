@@ -15,7 +15,7 @@ class Entity {
 
     template <class ComponentType>
     ComponentType& component() {
-        assert(has_component<ComponentType>());
+        assert(has_component<ComponentType>(), "Entity doesn't have component");
         return *(
             static_cast<ComponentType*>(components[COMPONENT(ComponentType)]));
     }
@@ -31,7 +31,7 @@ class Entity {
 
     template <class ComponentType>
     void remove_component() {
-        assert(has_component<ComponentType>());
+        assert(has_component<ComponentType>(), "Entity doesn't have component");
         components.erase(COMPONENT(ComponentType));
     }
 
@@ -44,17 +44,10 @@ class Entity {
 
     void reset() {}
 
-    bool is_valid() {
-        assert(false);
-        return _valid;
-    }
-
     dm_memory_pool_impl(Entity);
 
    private:
     std::map<uint32_t, Component*> components;
-
-    bool _valid;
 };
 
 dm_internal_register_type(Entity)

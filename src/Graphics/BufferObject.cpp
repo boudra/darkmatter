@@ -12,7 +12,7 @@ BufferObject::Type buffer_type(const GLenum type) {
         case GL_ELEMENT_ARRAY_BUFFER:
             return BufferObject::Type::IBO;
         default:
-            assert(false);
+            Log::fatal("Unknown buffer type");
     };
 }
 
@@ -23,7 +23,7 @@ GLenum buffer_type(const BufferObject::Type type) {
         case BufferObject::Type::IBO:
             return GL_ELEMENT_ARRAY_BUFFER;
         default:
-            assert(false);
+            Log::fatal("Unknown buffer type");
     };
 }
 
@@ -43,7 +43,7 @@ const BufferObject::Type BufferObject::type() const {
 }
 
 unsigned int BufferObject::create() {
-    assert(m_id == 0);
+    assert(m_id == 0, "BufferObject musn't be created");
     glGenBuffers(1, &m_id);
     return m_id;
 }
@@ -56,7 +56,7 @@ void BufferObject::remove() {
 }
 
 void BufferObject::bind() {
-    assert(m_id != 0 && !m_bound);
+    assert(m_id != 0 && !m_bound, "BufferObject must be created and not bound");
     glBindBuffer(m_type, m_id);
     m_bound = true;
 }
@@ -67,7 +67,7 @@ void BufferObject::release() {
 }
 
 void* BufferObject::p_map(const Access access) {
-    assert(m_bound);
+    assert(m_bound, "BufferObject not bound");
 
     GLenum opengl_access;
 
@@ -82,18 +82,18 @@ void* BufferObject::p_map(const Access access) {
             opengl_access = GL_READ_WRITE;
             break;
         default:
-            assert(false && "Invalid access policy");
+            Log::fatal("Invalid access policy");
     };
 
     void* ptr = glMapBuffer(m_type, opengl_access);
-    assert(ptr && "Failed to map the buffer, glMapBuffer returned NULL");
+    assert(ptr, "Failed to map the buffer, glMapBuffer returned NULL");
     m_mapped = true;
 
     return ptr;
 }
 
 void BufferObject::unmap() {
-    assert(m_bound);
+    assert(m_bound, "BufferObject must be bound");
     glUnmapBuffer(m_type);
     m_mapped = false;
 }
@@ -101,7 +101,7 @@ void BufferObject::unmap() {
 void BufferObject::p_set_data(const void* data, const Usage usage) {
     GLenum opengl_usage;
 
-    assert(m_bound);
+    assert(m_bound, "BufferObject must be bound");
 
     switch (usage) {
         case Usage::StreamDraw:
@@ -135,7 +135,7 @@ void BufferObject::p_set_data(const void* data, const Usage usage) {
             break;
 
         default:
-            assert(false && "Invalid usage flag.");
+            assert(false, "Invalid usage flag");
     };
 
     glBufferData(m_type, m_capacity * m_element_size, data, opengl_usage);

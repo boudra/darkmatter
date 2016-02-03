@@ -1,8 +1,8 @@
 #ifndef BUFFEROBJECT_HPP
 #define BUFFEROBJECT_HPP
 
-#include <cassert>
 #include <algorithm>
+#include "Core/Logger.hpp"
 
 namespace dm {
 
@@ -58,7 +58,7 @@ class BufferObject {
 
     template <class ValueType>
     void set_data(const ValueType* data, const Usage usage) {
-        assert(sizeof(ValueType) == m_element_size);
+        assert(sizeof(ValueType) == m_element_size, "Element size not right");
         p_set_data(static_cast<const void*>(data), usage);
     }
 

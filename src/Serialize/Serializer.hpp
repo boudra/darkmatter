@@ -82,7 +82,7 @@ class Deserializer {
             } else if (node.first == "physics") {
                 deserialize(node.second, e.assign<PhysicsComponent>());
             } else {
-                assert(false);
+                Log::fatal("Unknown component %s", node.first);
             }
         }
 

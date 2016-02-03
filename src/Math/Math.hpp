@@ -4,7 +4,8 @@
 #include <iostream>
 #include <cstdint>
 #include <cmath>
-#include <cassert>
+
+#include "Core/Logger.hpp"
 
 namespace dm {
 

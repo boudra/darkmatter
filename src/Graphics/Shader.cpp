@@ -16,7 +16,7 @@ ProgramShader::~ProgramShader() { this->unload_shaders(); }
 bool ProgramShader::link() {
     Log::progress("debug", "Linking shader %d", m_id);
 
-    assert(!m_shaders.empty());
+    assert(!m_shaders.empty(), "No shaders to link");
 
     glLinkProgram(m_id);
 
@@ -55,7 +55,7 @@ void ProgramShader::unload_shaders() {
 }
 
 void ProgramShader::bind() {
-    assert(m_id != 0);
+    assert(m_id != 0, "Program shader not created!");
     glUseProgram(m_id);
 }
 
@@ -95,7 +95,7 @@ bool ProgramShader::load(const char* filename, Shader::Type type) {
 
 bool ProgramShader::load_source(const char* data, Shader::Type type) {
 
-    assert(m_linked == false);
+    assert(m_linked == false, "Program is already linked");
 
     /* Create the program */
     if (m_id == 0) {
@@ -158,29 +158,29 @@ bool ProgramShader::load_source(const char* data, Shader::Type type) {
 
 /* GLSL Uniform setters */
 void ProgramShader::set_uniform(int value, const char* name) {
-    assert(m_id != 0);
+    assert(m_id != 0, "Program shader not created!");
     glUniform1i(glGetUniformLocation(m_id, name), value);
 }
 
 void ProgramShader::set_uniform(float value, const char* name) {
-    assert(m_id != 0);
+    assert(m_id != 0, "Program shader not created!");
     glUniform1f(glGetUniformLocation(m_id, name), value);
 }
 
 void ProgramShader::set_uniform(const Matrix4f& value, const char* name) {
-    assert(m_id != 0);
+    assert(m_id != 0, "Program shader not created!");
     Matrix4f transposed = value.transpose();
     glUniformMatrix4fv(glGetUniformLocation(m_id, name), 1, GL_FALSE,
                        &transposed.m[0]);
 }
 
 void ProgramShader::set_uniform(const Vec3f& value, const char* name) {
-    assert(m_id != 0);
+    assert(m_id != 0, "Program shader not created!");
     glUniform3f(glGetUniformLocation(m_id, name), value.x, value.y, value.z);
 }
 
 void ProgramShader::set_uniform(const Vec2f& value, const char* name) {
-    assert(m_id != 0);
+    assert(m_id != 0, "Program shader not created!");
     glUniform2f(glGetUniformLocation(m_id, name), value.x, value.y);
 }
 

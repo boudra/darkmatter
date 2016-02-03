@@ -6,7 +6,6 @@
 #include "Core/Logger.hpp"
 
 #include <algorithm>
-#include <cassert>
 #include <cstring>
 
 #include <GL/glew.h>
@@ -247,7 +246,7 @@ void SpriteBatch::flush() {
 
     Vertex* vertices = m_vertices->map<Vertex>(BufferObject::Access::ReadWrite);
 
-    assert(vertices != nullptr);
+    assert(vertices != nullptr, "Vertices must be mapped");
 
     Matrix4f transform, rotation;
 
@@ -255,7 +254,7 @@ void SpriteBatch::flush() {
         Vertex v[4];
 
         Sprite& s = *m_ordered_sprites[i];
-        const Texture* tex = this->m_resource_manager->get_texture(s.texture);
+        // const Texture* tex = this->m_resource_manager->get_texture(s.texture);
 
         v[0].position = s.position;
         v[1].position = s.position;

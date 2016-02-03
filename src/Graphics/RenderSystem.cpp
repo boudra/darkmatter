@@ -65,7 +65,6 @@ void RenderSystem::render(float interpolation) {
     for (auto& render : COMPONENTS(Render2d)) {
         if (render.shadow && render.billboard &&
             render.parent->has_component<PhysicsComponent>()) {
-            auto& physics = render.parent->component<PhysicsComponent>();
             // physics.rotation.rotate(angle, {1.0f, 0.0f, 0.0f});
 
             if (!render.has_sprite("shadow")) {
@@ -74,22 +73,6 @@ void RenderSystem::render(float interpolation) {
                     GET_MANAGER(ResourceManager)->get_texture_id("shadow.png"),
                     Color::White);
             }
-
-            // m_shadow_sprite.position = physics.position;
-            // m_shadow_sprite.position.y -= physics.size.x * 0.2f;
-            // m_shadow_sprite.position.x -= physics.size.x * 0.1f;
-            // m_shadow_sprite.position.z = 0.00001f;
-
-            // // m_shadow_sprite.scale = Vec3f{1.0f} + Vec3f{1.5f} *
-            // (physics.position.y * 9.5f);
-            // m_shadow_sprite.size = Vec2f{physics.size.x * 1.2f,
-            // physics.size.x *
-            // 0.5f};
-            // Vec2f half = m_shadow_sprite.size * 0.5f;
-
-            // m_shadow_sprite.scale_origin = Vec3f{-half.x, half.y, 0.0f};
-
-            // m_sprite_batch.draw(m_shadow_sprite);
         }
     }
 

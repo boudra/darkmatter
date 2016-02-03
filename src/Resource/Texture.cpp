@@ -2,7 +2,6 @@
 #include "Core/Logger.hpp"
 
 #include <iostream>
-#include <cassert>
 
 #include <GL/glew.h>
 #ifdef WIN32
@@ -31,7 +30,7 @@ const Texture::Format to_texture_format(int format) {
             break;
 
         default:
-            assert(false);
+            Log::fatal("Unknown texture format");
             break;
     };
 
@@ -55,7 +54,7 @@ const unsigned int to_opengl_format(Texture::Format format) {
             break;
 
         default:
-            assert(false);
+            Log::fatal("Unknown opengl texture format");
             break;
     };
 
@@ -79,7 +78,7 @@ const unsigned int to_opengl_filter(Texture::Filter filter) {
             break;
 
         default:
-            assert(false);
+            Log::fatal("Unknown texture filter");
             break;
     }
 
@@ -163,7 +162,7 @@ void Texture::set_data(unsigned char* data) {
     unsigned int format = to_opengl_format(m_format);
     size_t bytes = m_bpp / 8;
 
-    assert(m_bound);
+    assert(m_bound, "Texture must be bound");
 
     if (m_format == Format::Alpha) {
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -186,7 +185,8 @@ void Texture::set_data(unsigned char* data) {
 void Texture::sub_data(unsigned char* data, Vec2i position, Vec2i size) const {
     unsigned int format = to_opengl_format(m_format);
 
-    assert(position + size < m_size && m_bound);
+    assert(position + size < m_size, "Sub image not in image's bounds");
+    assert(m_bound, "Texture not bound");
 
     if (m_format == Format::Alpha) {
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -197,13 +197,8 @@ void Texture::sub_data(unsigned char* data, Vec2i position, Vec2i size) const {
 }
 
 void Texture::setup() {
-    assert(m_registered && m_bound);
+    assert(m_registered && m_bound, "Texture must be registered and bound");
 
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-    // GL_LINEAR);
-
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-    // GL_NEAREST);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                     to_opengl_filter(m_filter_min));
@@ -219,7 +214,7 @@ void Texture::setup() {
 }
 
 unsigned int Texture::upload() {
-    assert(m_registered == false);
+    assert(m_registered == false, "Texture must not be registered");
 
     glGenTextures(1, &m_opengl_id);
     glBindTexture(GL_TEXTURE_2D, m_opengl_id);
@@ -231,13 +226,14 @@ unsigned int Texture::upload() {
 }
 
 void Texture::bind() {
-    assert(m_opengl_id != 0 && m_registered && !m_bound);
+    assert(m_opengl_id != 0 && m_registered && !m_bound,
+            "Texture not created or already bound");
     glBindTexture(GL_TEXTURE_2D, m_opengl_id);
     m_bound = true;
 }
 
 void Texture::release() {
-    assert(m_bound);
+    assert(m_bound, "Texture not bound");
     glBindTexture(GL_TEXTURE_2D, 0);
     m_bound = false;
 }

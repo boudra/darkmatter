@@ -9,13 +9,20 @@
 #include <sys/time.h>
 #include <cppformat/format.h>
 
+#undef assert
+#define assert(expr, msg) \
+    if(!(expr)) { \
+        FATAL("Assert (" #expr ") failed: \x1B[33m" msg); \
+    }
+
+#define FATAL(msg) \
+    Log::fatal(msg, __FILE__, __LINE__, __FUNCTION__); \
+
 namespace dm {
 
 class Log {
    public:
     enum class Result { OK, ERROR };
-
-    static struct timeval begin;
 
     template <typename... arg_types>
     static void debug(const char* fmt, arg_types&&... args) {
@@ -34,6 +41,22 @@ class Log {
         fmt::printf(fmt, std::forward<arg_types>(args)...);
         fmt::printf("\x1B[0m");
         fmt::printf("\n");
+    }
+
+    [[noreturn]] static void fatal(const char* fmt, const char* file, const int line, const char* function_name) {
+        meta("fatal");
+        fmt::printf("\x1B[31m%s\x1B[0m in %s:%d::%s\n", fmt, file, line, function_name);
+        abort();
+    }
+
+    template <typename... arg_types>
+    [[noreturn]] static void fatal(const char* fmt, arg_types&&... args) {
+        meta("fatal");
+        fmt::printf("\x1B[31m");
+        fmt::printf(fmt, std::forward<arg_types>(args)...);
+        fmt::printf("\x1B[0m");
+        fmt::printf("\n");
+        abort();
     }
 
     template <typename... arg_types>
@@ -72,7 +95,15 @@ class Log {
     }
 
    private:
+
+    static struct timeval time_now() {
+        struct timeval time;
+        gettimeofday(&time, NULL);
+        return time;
+    }
+
     static void meta(const char* level) {
+        static struct timeval begin = time_now();
         struct timeval time;
 
         gettimeofday(&time, NULL);

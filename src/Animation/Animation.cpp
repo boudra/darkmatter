@@ -186,7 +186,7 @@ size_t AnimationSystem::get_animation(const std::string& name) {
         return found - m_animations.begin();
     } else {
         Log::error("Animation %s not found.", name.c_str());
-        assert(false);
+        return -1;
     }
 }
 
