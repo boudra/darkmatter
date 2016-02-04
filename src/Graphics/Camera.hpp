@@ -53,6 +53,7 @@ class Camera : public SystemBase {
 
     Matrix4f m_view;
 };
+dm_internal_register_type(Camera);
 
 } /* namespace dm */
 

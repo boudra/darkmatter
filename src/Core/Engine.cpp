@@ -111,7 +111,7 @@ bool Engine::initialize() {
 
     Log::ok("Engine started");
 
-    m_dispatcher.subscribe(this, &Engine::quit, EventType::QUIT);
+    m_dispatcher.subscribe("quit", this, &Engine::quit);
 
     return true;
 }

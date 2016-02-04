@@ -12,8 +12,13 @@
 
 namespace dm {
 
-using HandlerFunction = std::function<void(const Event&)>;
-using ListenerVector = std::vector<HandlerFunction>;
+
+struct SubscriptionInfo {
+    std::function<void(const Event&)> handler;
+    TypeInfo handler_type;
+};
+
+using ListenerVector = std::vector<SubscriptionInfo>;
 
 class EventDispatcher {
    public:
@@ -21,9 +26,8 @@ class EventDispatcher {
     ~EventDispatcher() {}
 
     template <class HandlerType, class EventValueType = Event>
-    size_t subscribe(HandlerType* handler,
-                     void (HandlerType::*func)(const EventValueType&),
-                     EventType type) {
+    size_t subscribe(EventType type, HandlerType* handler,
+                     void (HandlerType::*func)(const EventValueType&)) {
 
         using realfunc = void (HandlerType::*)(const Event&);
 
@@ -33,9 +37,16 @@ class EventDispatcher {
 
         ListenerVector& handlers = r.first->second;
 
-        handlers.push_back(std::bind(real, (handler), std::placeholders::_1));
+        handlers.push_back(SubscriptionInfo{
+                std::bind(real, (handler), std::placeholders::_1),
+                dm_type_info(HandlerType)
+        });
 
-        return handlers.size() - 1;
+        const auto subscription_id = handlers.size() - 1;
+
+        Log::debug("%s subscribed to %s", handlers[subscription_id].handler_type.name(), type);
+
+        return subscription_id;
     }
 
     void unsubscribe(EventType type, unsigned int listenerId) {
@@ -43,13 +54,13 @@ class EventDispatcher {
 
     template <class EventValueType>
     void send_event(const EventValueType& e) {
-        for (auto& handler : _listeners[e.type]) {
-            handler(e);
+        for (auto& sub : _listeners[e.type]) {
+            sub.handler(e);
         }
     }
 
    private:
-    std::map<EventType, ListenerVector> _listeners;
+    std::map<std::string, ListenerVector> _listeners;
 
 };
 }

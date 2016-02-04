@@ -108,11 +108,9 @@ void Camera::mouse_wheel(const MouseWheelEvent& e) {
 }
 
 bool Camera::initialize() {
-    s_dispatcher->subscribe(this, &Camera::button_pressed,
-                            EventType::KEY_PRESSED);
-    s_dispatcher->subscribe(this, &Camera::button_released,
-                            EventType::KEY_RELEASED);
-    s_dispatcher->subscribe(this, &Camera::mouse_wheel, EventType::MOUSE_WHEEL);
+    s_dispatcher->subscribe("key_down", this, &Camera::button_pressed);
+    s_dispatcher->subscribe("key_up", this, &Camera::button_released);
+    s_dispatcher->subscribe("mouse_wheel", this, &Camera::mouse_wheel);
     return true;
 }
 

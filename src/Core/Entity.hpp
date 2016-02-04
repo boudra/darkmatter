@@ -55,7 +55,7 @@ dm_internal_register_type(Entity)
     /* Event defining an added component */
     struct ComponentAddedEvent : Event {
     ComponentAddedEvent(const uint32_t type, const Entity* entity)
-        : Event(EventType::COMPONENT_ADDED),
+        : Event("component_added"),
           component_type(type),
           entity(entity) {}
 
@@ -66,7 +66,7 @@ dm_internal_register_type(Entity)
 /* Event defining a removed component */
 struct ComponentRemovedEvent : Event {
     ComponentRemovedEvent(const uint32_t type, const Entity* entity)
-        : Event(EventType::COMPONENT_REMOVED),
+        : Event("component_removed"),
           component_type(type),
           entity(entity) {}
 

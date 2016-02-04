@@ -69,7 +69,7 @@ void InputSystem::update() {
                 mouse_transformed.y =
                     (m_window_size.y - mouse_position.y) * m_mouse_transform.y;
                 s_dispatcher->send_event(
-                    MouseEvent(mouse_transformed, EventType::MOUSE_LPRESS));
+                    MouseEvent(mouse_transformed, "mouse_click"));
                 break;
             }
 

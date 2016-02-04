@@ -26,6 +26,7 @@ class PlayerManager : public Manager<PlayerManager> {
     Vec2i m_selected;
     Vec2i m_hover;
 };
+dm_internal_register_type(PlayerManager);
 }
 
 #endif

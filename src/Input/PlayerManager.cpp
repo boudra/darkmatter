@@ -25,12 +25,9 @@ namespace dm {
 PlayerManager::PlayerManager() {
     // s_dispatcher->subscribe(this, &PlayerManager::button_pressed,
     // EventType::KEY_PRESSED);
-    s_dispatcher->subscribe(this, &PlayerManager::button_released,
-                            EventType::KEY_RELEASED);
-    s_dispatcher->subscribe(this, &PlayerManager::mouse_motion,
-                            EventType::MOUSE_MOTION);
-    s_dispatcher->subscribe(this, &PlayerManager::mouse_click,
-                            EventType::MOUSE_LPRESS);
+    s_dispatcher->subscribe("key_up", this, &PlayerManager::button_released);
+    s_dispatcher->subscribe("mouse_motion", this, &PlayerManager::mouse_motion);
+    s_dispatcher->subscribe("mouse_click", this, &PlayerManager::mouse_click);
 }
 
 void PlayerManager::mouse_click(const MouseEvent& e) {

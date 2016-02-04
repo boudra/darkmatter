@@ -49,7 +49,10 @@ class Engine {
 
     std::vector<SystemBase*> m_systems;
     std::vector<ManagerBase*> m_managers;
+
 };
+
+dm_internal_register_type(Engine);
 
 inline Window* Engine::window() { return m_window; }
 
