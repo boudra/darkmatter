@@ -24,7 +24,16 @@ namespace dm {
 
 Engine::Engine() : m_window(nullptr), m_exit(false) {}
 
-Engine::~Engine() {}
+Engine::~Engine() {
+    m_dispatcher.unsubscribe(this);
+    for(auto& system : m_systems) {
+        delete system;
+    }
+    for(auto& manager : m_managers) {
+        // manager->~BaseManager();
+        delete manager;
+    }
+}
 
 bool Engine::initialize() {
     Log::info("Starting engine");

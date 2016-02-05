@@ -73,6 +73,11 @@ class Any {
     }
 
     template <typename ValueType>
+    const bool operator==(const ValueType& data) const {
+        return Cast<ValueType>() == data;
+    }
+
+    template <typename ValueType>
     const Any& operator=(ValueType&& data) {
         Any(std::forward<ValueType>(data)).Swap(*this);
         return *this;

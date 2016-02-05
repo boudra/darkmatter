@@ -72,6 +72,7 @@ class TypeInfo {
     bool operator!=(const std::string& str) const { return m_name != str; }
 
     bool is(const std::string& str) const { return m_name == str; }
+    bool is(const uint32_t& id) const { return m_id == id; }
 
     template <typename type>
     inline bool is() const {

@@ -10,7 +10,7 @@ namespace dm {
 class PlayerManager : public Manager<PlayerManager> {
    public:
     PlayerManager();
-    ~PlayerManager() {}
+    ~PlayerManager();
 
     void button_pressed(const KeyboardEvent& e);
     void button_released(const KeyboardEvent& e);

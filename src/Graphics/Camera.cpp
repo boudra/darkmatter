@@ -16,7 +16,9 @@ Camera::Camera()
       m_zoom_velocity{0.0f},
       m_view{1.0f} {}
 
-Camera::~Camera() {}
+Camera::~Camera() {
+    s_dispatcher->unsubscribe(this);
+}
 
 void Camera::render(float interpolation) {}
 

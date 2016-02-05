@@ -30,6 +30,10 @@ PlayerManager::PlayerManager() {
     s_dispatcher->subscribe("mouse_click", this, &PlayerManager::mouse_click);
 }
 
+PlayerManager::~PlayerManager() {
+    s_dispatcher->unsubscribe(this);
+}
+
 void PlayerManager::mouse_click(const MouseEvent& e) {
     TileMap& map = s_engine->system<World>()->map();
     // AnimationSystem* animation = s_engine->System<AnimationSystem>();

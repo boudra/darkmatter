@@ -15,7 +15,7 @@ namespace dm {
 
 struct SubscriptionInfo {
     std::function<void(const Event&)> handler;
-    TypeInfo handler_type;
+    Any handler_type;
 };
 
 using ListenerVector = std::vector<SubscriptionInfo>;
@@ -39,17 +39,33 @@ class EventDispatcher {
 
         handlers.push_back(SubscriptionInfo{
                 std::bind(real, (handler), std::placeholders::_1),
-                dm_type_info(HandlerType)
+                Any(handler)
         });
 
         const auto subscription_id = handlers.size() - 1;
 
-        Log::debug("%s subscribed to %s", handlers[subscription_id].handler_type.name(), type);
+        Log::debug("%s subscribed to %s", dm_type_name(HandlerType), type);
 
         return subscription_id;
     }
 
-    void unsubscribe(EventType type, unsigned int listenerId) {
+    template <class HandlerType, class EventValueType = Event>
+    void unsubscribe(const HandlerType* handler, EventType type) {
+        auto& vector = _listeners[type];
+        const auto size = vector.size();
+        vector.erase(std::remove_if(vector.begin(), vector.end(), [handler](const SubscriptionInfo& sub) {
+                return sub.handler_type == handler;
+        }), vector.end());
+        if(size - vector.size() > 0) {
+            Log::debug("%s unsubscribed from %s", dm_type_name(HandlerType), type);
+        }
+    }
+
+    template <class HandlerType>
+    void unsubscribe(const HandlerType* handler) {
+        for (auto& handlers : _listeners) {
+            unsubscribe(handler, handlers.first.c_str());
+        }
     }
 
     template <class EventValueType>
