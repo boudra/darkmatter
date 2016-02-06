@@ -86,7 +86,7 @@ class Stack {
     unsigned int top_;
 };
 
-template <typename object_type, size_t block_size = 10>
+template <typename object_type, size_t ns = 0, size_t block_size = 10>
 class MemoryPool {
    public:
     struct Block {
@@ -128,13 +128,13 @@ class MemoryPool {
         size_--;
     }
 
-    static MemoryPool<object_type, block_size>& instance() {
-        static MemoryPool<object_type, block_size> instance_;
+    static MemoryPool<object_type, ns, block_size>& instance() {
+        static MemoryPool<object_type, ns, block_size> instance_;
         return instance_;
     }
 
     static std::mutex& mutex() {
-        return MemoryPool<object_type, block_size>::instance().mut_;
+        return MemoryPool< object_type, ns, block_size>::instance().mut_;
     }
 
     object_type* allocate_block() {

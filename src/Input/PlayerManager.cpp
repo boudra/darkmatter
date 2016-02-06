@@ -88,42 +88,6 @@ void PlayerManager::mouse_click(const MouseEvent& e) {
 }
 
 void PlayerManager::mouse_motion(const MouseEvent& e) {
-    /*
-
-    static const Vec2f NormalizeWindowCoord {1.0f/1280.0f, 1.0f/720.0f};
-
-    auto& physics = m_player.Component<PhysicsComponent>();
-    auto& render = m_player.Component<Render2d>();
-    auto& player = m_player.Component<PlayerComponent>();
-
-    SpriteVector& sprites = render.Sprites();
-    Sprite& weapon = sprites[2];
-
-    Vec3f mouseWorld = e.Position * NormalizeWindowCoord;
-    mouseWorld -= Vec3f {0.5, 0.5} - s_engine->System<Camera>()->GetTarget();
-
-    //const Vec3f weaponPosition = physics.GetPosition() + weapon.m_position +
-    weapon.m_rotationOrigin;
-
-    //Vec3f direction = mouseWorld - weaponPosition;
-    //direction = direction.Normalize();
-
-    //const float angle = std::atan2(direction.y, direction.x);
-    const Vec3f playerCenter = physics.GetPosition() +
-    physics.GetRotationOrigin();
-
-    if((mouseWorld.x > playerCenter.x && player.m_direction.x < 0.0f) ||
-       (mouseWorld.x < playerCenter.x && player.m_direction.x > 0.0f))
-    {
-       player.m_direction.x = -player.m_direction.x;
-       sprites[BODY].FlipHorizontal();
-       sprites[HEAD].FlipHorizontal();
-       sprites[WEAPON].FlipVertical();
-    }
-
-    //weapon.m_rotation.AngleAxis(angle, {0.0f, 0.0f, 1.0f});
-
-    */
 
     static const Vec2f normalize_coordinates{1.0f / 1280.0f, 1.0f / 720.0f};
 

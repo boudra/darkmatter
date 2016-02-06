@@ -3,7 +3,7 @@ INCLUDE(FindPackageHandleStandardArgs)
 FIND_PATH(GLEW_INCLUDE_DIRS GL/glew.h
   PATH_SUFFIXES include
   PATHS
-  ${CMAKE_SOURCE_DIR}/thirdparty/*
+  ${CMAKE_SOURCE_DIR}/vendor/*
 )
 
 MESSAGE("GLEW_INCLUDE_DIRS is ${GLEW_INCLUDE_DIRS}")
@@ -12,7 +12,7 @@ FIND_LIBRARY(GLEW_LIBRARIES
   NAMES glew32s glew32
   PATH_SUFFIXES lib64 lib lib32
   PATHS
-  ${CMAKE_SOURCE_DIR}/thirdparty/*
+  ${CMAKE_SOURCE_DIR}/vendor/*
 )
 
 MESSAGE("GLEW_LIBRARIES is ${GLEW_LIBRARIES}")

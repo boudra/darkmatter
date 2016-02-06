@@ -1,0 +1,6 @@
+[submodule "jester"]
+	path = jester
+	url = git@github.com:boudra/jester.git
+[submodule "vendor/jester"]
+	path = vendor/jester
+	url = git@github.com:boudra/jester.git

@@ -115,7 +115,7 @@ bool Window::create_context() {
     // LOG(DEBUG, "MSAA " << msaa);
 
     // VSync
-    SDL_GL_SetSwapInterval(1);
+    SDL_GL_SetSwapInterval(0);
 
     glewExperimental = GL_TRUE;
     glewInit();
