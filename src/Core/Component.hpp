@@ -12,11 +12,7 @@
 #define COMPONENTS(TYPE) dm::MemoryPool<TYPE>::instance()
 
 #define dm_register_component(type)              \
-    dm_memory_pool_impl(type)                    \
-    }                                            \
-    ;                                            \
-    dm_internal_register_type_name(type, #type); \
-    namespace dummy {
+    dm_internal_memory_pool(type)
 
 namespace dm {
 

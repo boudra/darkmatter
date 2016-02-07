@@ -1,45 +1,42 @@
 cmake_minimum_required(VERSION 2.6)
 project(darkmatter)
 
+set(CMAKE_MACOSX_RPATH 1)
 set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules")
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/tests)
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+set(VENDOR_DIR ${CMAKE_SOURCE_DIR}/vendor)
+SET(ENABLE_TESTS 1 CACHE BOOL "Compile tests")
 
-file(GLOB darkmatter_files "src/*.cpp" "src/*/*.cpp" "src/*.hpp" "src/*/*.hpp")
+file(GLOB_RECURSE darkmatter_files "src/*.cpp")
+file(GLOB_RECURSE test_files "src/*_test.cpp")
 
-macro(GroupSources curdir)
+foreach(test ${test_files})
+    list(REMOVE_ITEM darkmatter_files ${test})
+endforeach(test)
 
-    file(GLOB children RELATIVE ${darkmatter_SOURCE_DIR}/${curdir} ${darkmatter_SOURCE_DIR}/${curdir}/*)
-
-    foreach(child ${children})
-
-        if(IS_DIRECTORY ${darkmatter_SOURCE_DIR}/${curdir}/${child})
-            GroupSources(${curdir}/${child})
-        else()
-            string(REPLACE "/" "\\" groupname ${curdir})
-            #string(REPLACE "src" "Source" groupname ${groupname})
-            source_group(${groupname} FILES ${darkmatter_SOURCE_DIR}/${curdir}/${child})
-
-        endif()
-
-    endforeach()
-
-endmacro()
-
-GroupSources(src)
-
-include_directories(${darkmatter_SOURCE_DIR}/src)
+include_directories(${darkmatter_SOURCE_DIR}/src ${VENDOR_DIR})
 
 add_library(darkmatter SHARED ${darkmatter_files})
+
+if(${ENABLE_TESTS})
+    foreach(test ${test_files})
+        get_filename_component(target ${test} NAME_WE)
+        add_executable(${target} ${test})
+        add_dependencies(${target} darkmatter)
+        target_link_libraries(${target} darkmatter)
+    endforeach(test)
+endif()
 
 find_package(OpenGL)
 target_link_libraries(darkmatter ${OPENGL_LIBRARIES})
 
 if(UNIX)
 
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -O0 -Wall -Wno-long-long -g -pedantic -std=c++11")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -O0 -Wall -Wno-long-long -g -pedantic -std=c++11 --coverage")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lc++abi")
 
     find_package(PkgConfig)

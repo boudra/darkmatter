@@ -44,6 +44,7 @@ class Entity {
 
     void reset() {}
 
+    using memory_pool = MemoryPool<Entity>;
     dm_memory_pool_impl(Entity);
 
    private:

@@ -294,20 +294,30 @@ class MemoryPool {
 
 #define dm_memory_pool_impl(object_type)                                       \
     void* operator new(size_t size) {                                          \
-        object_type* ptr = MemoryPool<object_type>::instance().allocate(size); \
+        object_type* ptr = object_type::memory_pool::instance().allocate(size); \
         return ptr;                                                            \
     }                                                                          \
     void operator delete(void* ptr) {                                          \
-        MemoryPool<object_type>::instance().deallocate(                        \
+        object_type::memory_pool::instance().deallocate(                        \
             static_cast<object_type*>(ptr));                                   \
     }
 
-#define dm_memory_pool(object_type)                            \
+#define dm_internal_memory_pool(object_type)                            \
+    using memory_pool = MemoryPool<object_type>; \
     dm_memory_pool_impl(object_type)                           \
     }                                                          \
     ;                                                          \
     dm_internal_register_type_name(object_type, #object_type); \
     namespace dummy {
+
+#define dm_memory_pool(object_type)                            \
+    using memory_pool = dm::MemoryPool<object_type>; \
+    dm_memory_pool_impl(object_type)                           \
+    }                                                          \
+    ;                                                          \
+    dm_register_type_name(object_type, #object_type); \
+    namespace dummy {
+
 }
 
 #endif

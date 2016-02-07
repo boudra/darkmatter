@@ -42,7 +42,7 @@ struct Sprite {
         scale.x *= -1.0f;
     }
 
-    dm_memory_pool(Sprite);
+    dm_internal_memory_pool(Sprite);
 };
 
 struct Render2d : public Component {
