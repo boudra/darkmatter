@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 2.6)
 project(darkmatter)
 
-set(CMAKE_MACOSX_RPATH 1)
+set(CMAKE_MACOSX_RPATH 0)
 set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules")
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/tests)
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 set(VENDOR_DIR ${CMAKE_SOURCE_DIR}/vendor)
@@ -36,7 +37,7 @@ target_link_libraries(darkmatter ${OPENGL_LIBRARIES})
 
 if(UNIX)
 
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -O0 -Wall -Wno-long-long -g -pedantic -std=c++11 --coverage")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -O0 -Wall -Wno-long-long -g -pedantic -std=c++11")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lc++abi")
 
     find_package(PkgConfig)
