@@ -26,7 +26,7 @@ class ResourceManager : public Manager<ResourceManager> {
     Font* get_font(const std::string& filename);
     Font* get_font(const size_t& id);
 
-    const bool initialize();
+    // const bool initialize();
 
    private:
     ObjectPool<Texture> m_textures;

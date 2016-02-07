@@ -30,7 +30,7 @@ void main() {
 }
 )";
 
-const char* font_vert = R"(
+const char* default_vert = R"(
 #version 330
 
 layout (location = 0) in vec3 l_vertex;
@@ -47,6 +47,22 @@ void main() {
    s_texture_coord = l_texture;
    s_color = l_color;
    gl_Position = u_projection_matrix * vec4(l_vertex, 1.0);
+}
+)";
+
+const char* default_frag = R"(
+#version 330
+
+uniform sampler2D u_sampler;
+
+out vec4 o_color;
+in vec2 s_texture_coord;
+in vec4 s_color;
+
+void main() {
+    vec4 texel = s_color * texture(u_sampler, s_texture_coord);
+    if(texel.a < 0.05) discard;
+    o_color = texel;
 }
 )";
 
@@ -74,20 +90,30 @@ void SpriteBatch::fill_indices() {
 
 bool SpriteBatch::initialize(ResourceManager* resource_manager) {
     m_resource_manager = resource_manager;
+    m_resource_manager->load_font("data/DroidSans.ttf", 16);
+    m_resource_manager->load_font("data/DroidSans.ttf", 18);
+    m_resource_manager->load_font("data/DroidSans.ttf", 20);
+    m_resource_manager->load_font("data/DroidSans.ttf", 24);
+    m_resource_manager->load_font("data/DroidSans.ttf", 30);
+    m_resource_manager->load_font("data/DroidSans.ttf", 34);
 
     m_ordered_sprites.reserve(MinSprites);
     m_sprites.reserve(MinSprites);
 
     m_ortho.ortho({{0.0f, 0.0f}, {1280.0f, 720.0f}}, {-1.0f, 100.0f});
 
-    m_font_shader.load_source(font_vert, dm::Shader::Type::Vertex);
+    m_font_shader.load_source(default_vert, dm::Shader::Type::Vertex);
     m_font_shader.load_source(font_frag, dm::Shader::Type::Fragment);
-
     m_font_shader.link();
-
     m_font_shader.bind();
     m_font_shader.set_uniform(1, "u_sampler");
     m_font_shader.set_uniform(m_ortho, "u_projection_matrix");
+
+    m_shader.load_source(default_vert, dm::Shader::Type::Vertex);
+    m_shader.load_source(default_frag, dm::Shader::Type::Fragment);
+    m_shader.link();
+    m_shader.bind();
+    m_shader.set_uniform(1, "u_sampler");
 
     m_vao.create();
 
@@ -128,7 +154,7 @@ void SpriteBatch::begin() {
 Sprite& SpriteBatch::add_sprite(const Sprite& sprite) {
     m_sprites.push_back(sprite);
     Sprite& s = m_sprites.back();
-    if (s.shader == nullptr) s.shader = m_shader;
+    if (s.shader == nullptr) s.shader = &m_shader;
     m_sprite_count++;
 
     if (m_sprite_count == MaxSprites) {
@@ -254,7 +280,8 @@ void SpriteBatch::flush() {
         Vertex v[4];
 
         Sprite& s = *m_ordered_sprites[i];
-        // const Texture* tex = this->m_resource_manager->get_texture(s.texture);
+        // const Texture* tex =
+        // this->m_resource_manager->get_texture(s.texture);
 
         v[0].position = s.position;
         v[1].position = s.position;

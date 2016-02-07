@@ -102,9 +102,4 @@ Font* ResourceManager::get_font(const std::string& filename) {
 
 Font* ResourceManager::get_font(const size_t& id) { return &m_fonts[id]; }
 
-const bool ResourceManager::initialize() {
-    load_texture("data/blank.png", "blank");
-    return true;
-}
-
 } /* namespace dm */

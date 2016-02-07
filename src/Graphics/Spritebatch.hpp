@@ -46,9 +46,15 @@ class SpriteBatch {
 
     void draw(const Sprite& sprite);
 
-    void set_view_matrix(const Matrix4f& matrix) { m_view = matrix; }
+    void set_view_matrix(const Matrix4f& matrix) {
+        m_shader.bind();
+        m_shader.set_uniform(matrix, "u_view_matrix");
+    }
 
-    void set_default_shader(ProgramShader* shader) { m_shader = shader; }
+    void set_projection_matrix(const Matrix4f& matrix) {
+        m_shader.bind();
+        m_shader.set_uniform(matrix, "u_projection_matrix");
+    }
 
    private:
     Sprite& add_sprite(const Sprite& sprite);
@@ -69,7 +75,7 @@ class SpriteBatch {
 
     size_t m_sprite_count;
 
-    ProgramShader* m_shader;
+    ProgramShader m_shader;
     ProgramShader m_font_shader;
 
     BufferObject* m_vertices;

@@ -10,13 +10,12 @@
 #include <cppformat/format.h>
 
 #undef assert
-#define assert(expr, msg) \
-    if(!(expr)) { \
+#define assert(expr, msg)                                 \
+    if (!(expr)) {                                        \
         FATAL("Assert (" #expr ") failed: \x1B[33m" msg); \
     }
 
-#define FATAL(msg) \
-    Log::fatal(msg, __FILE__, __LINE__, __FUNCTION__); \
+#define FATAL(msg) Log::fatal(msg, __FILE__, __LINE__, __FUNCTION__);
 
 namespace dm {
 
@@ -43,9 +42,11 @@ class Log {
         fmt::printf("\n");
     }
 
-    [[noreturn]] static void fatal(const char* fmt, const char* file, const int line, const char* function_name) {
+    [[noreturn]] static void fatal(const char* fmt, const char* file,
+                                   const int line, const char* function_name) {
         meta("fatal");
-        fmt::printf("\x1B[31m%s\x1B[0m in %s:%d::%s\n", fmt, file, line, function_name);
+        fmt::printf("\x1B[31m%s\x1B[0m in %s:%d::%s\n", fmt, file, line,
+                    function_name);
         abort();
     }
 
@@ -95,7 +96,6 @@ class Log {
     }
 
    private:
-
     static struct timeval time_now() {
         struct timeval time;
         gettimeofday(&time, NULL);

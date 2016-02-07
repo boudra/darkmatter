@@ -10,15 +10,22 @@ namespace dm {
 
 struct PhysicsComponent;
 
-class Camera : public SystemBase {
+class Camera : public System {
    public:
-    Camera();
+    Camera()
+        : m_lockedEntity(nullptr),
+          m_target{0.0f},
+          m_relativePosition{0.0f, 0.0f, 1.00f},
+          m_velocity{0.0f},
+          m_drag{0.0f},
+          m_zoom{0.5f},
+          m_zoom_velocity{0.0f},
+          m_view{1.0f} {}
+
     ~Camera();
 
-    void render(float interpolation);
-    void update();
-
-    bool initialize();
+    void render(const GameState& state) {}
+    void update(GameState&);
 
     void lock(Entity* e);
 

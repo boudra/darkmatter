@@ -6,20 +6,14 @@
 
 namespace dm {
 
-PhysicsSystem::PhysicsSystem() : SystemBase("Physics") {}
-
-PhysicsSystem::~PhysicsSystem() {}
-
-bool PhysicsSystem::initialize() { return true; }
-
-void PhysicsSystem::render(float interpolation) {}
+void PhysicsSystem::render(const GameState& state) {}
 
 bool check_aabb(const AABB& a, const AABB& b) {
     return (a.max.x > b.min.x && a.min.x < b.max.x && a.max.y > b.min.y &&
             a.min.y < b.max.y && a.max.z > b.min.z && a.min.z < b.max.z);
 }
 
-void PhysicsSystem::update() {
+void PhysicsSystem::update(GameState& state) {
     float speed = 0.0f;
     auto& components = COMPONENTS(PhysicsComponent);
     Matrix4f rotation;

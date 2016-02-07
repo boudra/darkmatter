@@ -39,12 +39,12 @@ class Any {
     }
 
     template <typename T>
-    const T Cast() const {
+    const T& Cast() const {
         return static_cast<Holder<T>*>(m_holder)->data;
     }
 
     template <typename T>
-    T Cast() {
+    T& Cast() {
         return static_cast<Holder<T>*>(m_holder)->data;
     }
 

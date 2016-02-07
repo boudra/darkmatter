@@ -9,15 +9,13 @@ struct SDL_Window;
 
 namespace dm {
 
-class InputSystem : public SystemBase {
+class InputSystem : public System {
    public:
-    InputSystem() : SystemBase("Input") {}
+    InputSystem() {}
     ~InputSystem() {}
 
-    void render(float interpolation);
-    void update();
-
-    bool initialize();
+    void render(const GameState&);
+    void update(GameState&);
 
     void set_window(SDL_Window* window);
 
@@ -26,6 +24,7 @@ class InputSystem : public SystemBase {
     Vec2i m_window_size;
     Vec2f m_mouse_transform;
 };
+dm_internal_register_type(InputSystem)
 }
 
 #endif

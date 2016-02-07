@@ -19,22 +19,22 @@ void InputSystem::set_window(SDL_Window* window) {
                           static_cast<float>(m_window_size.y);
 }
 
-void InputSystem::update() {
+void InputSystem::update(GameState& state) {
     SDL_Event sdl_event;
+    Log::info("update");
     while (SDL_PollEvent(&sdl_event)) {
         switch (sdl_event.type) {
             case SDL_QUIT:
-                s_dispatcher->send_event(QuitEvent());
+                state.send_event(QuitEvent());
                 break;
 
             case SDL_KEYDOWN:
                 if (sdl_event.key.repeat != 0) continue;
-                s_dispatcher->send_event(
-                    KeyboardEvent(sdl_event.key.keysym.sym, true));
+                state.send_event(KeyboardEvent(sdl_event.key.keysym.sym, true));
                 break;
 
             case SDL_KEYUP:
-                s_dispatcher->send_event(
+                state.send_event(
                     KeyboardEvent(sdl_event.key.keysym.sym, false));
                 break;
 
@@ -45,7 +45,7 @@ void InputSystem::update() {
                 mouse_transformed.x = mouse_position.x * m_mouse_transform.x;
                 mouse_transformed.y =
                     (m_window_size.y - mouse_position.y) * m_mouse_transform.y;
-                s_dispatcher->send_event(MouseEvent(mouse_transformed));
+                state.send_event(MouseEvent(mouse_transformed));
                 break;
             }
 
@@ -68,14 +68,13 @@ void InputSystem::update() {
                 mouse_transformed.x = mouse_position.x * m_mouse_transform.x;
                 mouse_transformed.y =
                     (m_window_size.y - mouse_position.y) * m_mouse_transform.y;
-                s_dispatcher->send_event(
-                    MouseEvent(mouse_transformed, "mouse_click"));
+                state.send_event(MouseEvent(mouse_transformed, "mouse_click"));
                 break;
             }
 
             case SDL_MOUSEWHEEL: {
                 Vec2i delta{sdl_event.wheel.x, sdl_event.wheel.y};
-                s_dispatcher->send_event(MouseWheelEvent(delta));
+                state.send_event(MouseWheelEvent(delta));
                 break;
             }
 
@@ -85,7 +84,5 @@ void InputSystem::update() {
     }
 }
 
-void InputSystem::render(float interpolation) {}
-
-bool InputSystem::initialize() { return true; }
+void InputSystem::render(const GameState& state) {}
 }

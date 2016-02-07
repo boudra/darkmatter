@@ -199,7 +199,6 @@ void Texture::sub_data(unsigned char* data, Vec2i position, Vec2i size) const {
 void Texture::setup() {
     assert(m_registered && m_bound, "Texture must be registered and bound");
 
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                     to_opengl_filter(m_filter_min));
 
@@ -227,7 +226,7 @@ unsigned int Texture::upload() {
 
 void Texture::bind() {
     assert(m_opengl_id != 0 && m_registered && !m_bound,
-            "Texture not created or already bound");
+           "Texture not created or already bound");
     glBindTexture(GL_TEXTURE_2D, m_opengl_id);
     m_bound = true;
 }

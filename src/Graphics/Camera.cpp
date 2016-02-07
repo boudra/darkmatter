@@ -5,50 +5,53 @@
 
 namespace dm {
 
-Camera::Camera()
-    : SystemBase("Camera"),
-      m_lockedEntity(nullptr),
-      m_target{0.0f},
-      m_relativePosition{0.0f, 0.0f, 1.00f},
-      m_velocity{0.0f},
-      m_drag{0.0f},
-      m_zoom{0.5f},
-      m_zoom_velocity{0.0f},
-      m_view{1.0f} {}
+Camera::~Camera() {}
 
-Camera::~Camera() {
-    s_dispatcher->unsubscribe(this);
-}
+void Camera::update(GameState& state) {
+    if (state.is("initial")) {
+        state.subscribe("key_down", this, &Camera::button_pressed);
+        state.subscribe("key_up", this, &Camera::button_released);
+        state.subscribe("mouse_wheel", this, &Camera::mouse_wheel);
 
-void Camera::render(float interpolation) {}
+        state.set("view_matrix", Matrix4f());
+        state.set("projection_matrix", Matrix4f());
 
-void Camera::update() {
-    if (m_lockedEntity) {
-        PhysicsComponent* m_physics =
-            &m_lockedEntity->component<PhysicsComponent>();
-        const Vec3f& size = m_physics->size;
-        m_target = m_physics->position + size * 0.5f;
     } else {
-        m_target += m_velocity;
-        m_velocity = m_velocity * m_drag;
+        if (m_lockedEntity) {
+            PhysicsComponent* m_physics =
+                &m_lockedEntity->component<PhysicsComponent>();
+            const Vec3f& size = m_physics->size;
+            m_target = m_physics->position + size * 0.5f;
+        } else {
+            m_target += m_velocity;
+            m_velocity = m_velocity * m_drag;
+        }
+
+        m_zoom += m_zoom_velocity;
+        m_zoom_velocity *= m_zoom_drag;
+
+        m_zoom = max(0.01f, m_zoom);
+
+        const float speed = m_velocity.length();
+
+        if (speed < 0.005f) {
+            m_target.x = std::round(m_target.x * 100.0f) / 100.0f;
+            m_target.z = std::round(m_target.z * 100.0f) / 100.0f;
+            m_target.y = std::round(m_target.y * 100.0f) / 100.0f;
+        }
+
+        m_position = m_target + (m_relativePosition);
+
+        m_view.look_at(m_position, m_target, Vec3f{0.0f, 1.0f, 0.0f});
+
+        Matrix4f projection;
+        projection.ortho(
+            {{-m_zoom, -m_zoom * 0.5625f}, {m_zoom, m_zoom * 0.5625f}},
+            {-1.0f, 100.0f});
+
+        state.set("view_matrix", m_view);
+        state.set("projection_matrix", projection);
     }
-
-    m_zoom += m_zoom_velocity;
-    m_zoom_velocity *= m_zoom_drag;
-
-    m_zoom = max(0.01f, m_zoom);
-
-    const float speed = m_velocity.length();
-
-    if (speed < 0.005f) {
-        m_target.x = std::round(m_target.x * 100.0f) / 100.0f;
-        m_target.z = std::round(m_target.z * 100.0f) / 100.0f;
-        m_target.y = std::round(m_target.y * 100.0f) / 100.0f;
-    }
-
-    m_position = m_target + (m_relativePosition);
-
-    m_view.look_at(m_position, m_target, Vec3f{0.0f, 1.0f, 0.0f});
 }
 
 void Camera::button_pressed(const KeyboardEvent& e) {
@@ -107,13 +110,6 @@ void Camera::button_released(const KeyboardEvent& e) {
 void Camera::mouse_wheel(const MouseWheelEvent& e) {
     m_zoom_velocity = float(e.delta.y) * -0.01f;
     m_zoom_drag = 0.90f;
-}
-
-bool Camera::initialize() {
-    s_dispatcher->subscribe("key_down", this, &Camera::button_pressed);
-    s_dispatcher->subscribe("key_up", this, &Camera::button_released);
-    s_dispatcher->subscribe("mouse_wheel", this, &Camera::mouse_wheel);
-    return true;
 }
 
 void Camera::lock(Entity* e) { m_lockedEntity = e; }

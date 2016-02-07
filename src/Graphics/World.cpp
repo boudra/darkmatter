@@ -18,10 +18,6 @@
 
 namespace dm {
 
-bool World::initialize() {
-    return true;
-}
-
 void unlock_body(Entity* e) { e->component<BodyComponent>().lock = false; }
 
 bool World::move(BodyComponent& body, int x, int y) {
@@ -66,7 +62,7 @@ Vec3f World::real_position(Vec2i position, Vec3f size) {
     return real;
 }
 
-void World::update() {
+void World::update(GameState& state) {
     auto& bodies = COMPONENTS(BodyComponent);
     auto& cursors = COMPONENTS(Cursor);
 
@@ -220,7 +216,5 @@ void World::update() {
         cursor_physics.position.z = 0.0001f;
     }
 }
-
-void World::render(float interpolation) {}
 
 } /* namespace dm */

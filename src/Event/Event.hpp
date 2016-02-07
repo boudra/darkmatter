@@ -44,24 +44,20 @@ struct QuitEvent : Event {
 
 struct KeyboardEvent : Event {
     KeyboardEvent(unsigned int key, bool state)
-        : Event(state ? "key_down" : "key_up"),
-          state(state),
-          key(key) {}
+        : Event(state ? "key_down" : "key_up"), state(state), key(key) {}
 
     bool state;
     unsigned int key;
 };
 
 struct MouseEvent : Event {
-    MouseEvent(const Vec2f& position,
-               const EventType type = "mouse_motion")
+    MouseEvent(const Vec2f& position, const EventType type = "mouse_motion")
         : Event(type), position(position) {}
     Vec2f position;
 };
 
 struct MouseWheelEvent : Event {
-    MouseWheelEvent(const Vec2i& delta,
-                    const EventType type = "mouse_wheel")
+    MouseWheelEvent(const Vec2i& delta, const EventType type = "mouse_wheel")
         : Event(type), delta(delta) {}
     Vec2i delta;
 };

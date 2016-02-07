@@ -1,4 +1,3 @@
 #include "Logger.hpp"
 
-namespace dm {
-}
+namespace dm {}

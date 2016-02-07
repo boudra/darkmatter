@@ -84,13 +84,9 @@ class Stack {
         return std::reverse_iterator<object_type*>(data_);
     }
 
-    object_type* rbegin() {
-        return data_;
-    }
+    object_type* rbegin() { return data_; }
 
-    object_type* rend() {
-        return data_ + top_;
-    }
+    object_type* rend() { return data_ + top_; }
 
     /* sort it in descending order in memory (ascending in pop order) */
     void sort() { std::sort(data_, data_ + top_, std::greater<object_type>()); }
@@ -151,7 +147,7 @@ class MemoryPool {
     }
 
     static std::mutex& mutex() {
-        return MemoryPool< object_type, ns, block_size>::instance().mut_;
+        return MemoryPool<object_type, ns, block_size>::instance().mut_;
     }
 
     object_type* allocate_block() {
@@ -299,7 +295,9 @@ class MemoryPool {
 
    private:
     MemoryPool()
-        : first_block_(nullptr), last_block_(nullptr), size_(0), mut_() {}
+        : first_block_(nullptr), last_block_(nullptr), size_(0), mut_() {
+        allocate_block();
+    }
 
     Block* first_block_;
     Block* last_block_;
@@ -308,32 +306,32 @@ class MemoryPool {
     std::mutex mut_;
 };
 
-#define dm_memory_pool_impl(object_type)                                       \
-    void* operator new(size_t size) {                                          \
-        object_type* ptr = object_type::memory_pool::instance().allocate(size); \
-        return ptr;                                                            \
-    }                                                                          \
-    void operator delete(void* ptr) {                                          \
-        object_type::memory_pool::instance().deallocate(                        \
-            static_cast<object_type*>(ptr));                                   \
+#define dm_memory_pool_impl(object_type)                         \
+    void* operator new(size_t size) {                            \
+        object_type* ptr =                                       \
+            object_type::memory_pool::instance().allocate(size); \
+        return ptr;                                              \
+    }                                                            \
+    void operator delete(void* ptr) {                            \
+        object_type::memory_pool::instance().deallocate(         \
+            static_cast<object_type*>(ptr));                     \
     }
 
-#define dm_internal_memory_pool(object_type)                            \
-    using memory_pool = MemoryPool<object_type>; \
+#define dm_internal_memory_pool(object_type)                   \
+    using memory_pool = MemoryPool<object_type>;               \
     dm_memory_pool_impl(object_type)                           \
     }                                                          \
     ;                                                          \
     dm_internal_register_type_name(object_type, #object_type); \
     namespace dummy {
 
-#define dm_memory_pool(object_type)                            \
-    using memory_pool = dm::MemoryPool<object_type>; \
-    dm_memory_pool_impl(object_type)                           \
-    }                                                          \
-    ;                                                          \
+#define dm_memory_pool(object_type)                   \
+    using memory_pool = dm::MemoryPool<object_type>;  \
+    dm_memory_pool_impl(object_type)                  \
+    }                                                 \
+    ;                                                 \
     dm_register_type_name(object_type, #object_type); \
     namespace dummy {
-
 }
 
 #endif

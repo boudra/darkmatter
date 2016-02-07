@@ -10,10 +10,6 @@
 
 namespace dm {
 
-AnimationSystem::AnimationSystem() : SystemBase("Animation") {}
-
-AnimationSystem::~AnimationSystem() {}
-
 template <typename ValueType>
 ValueType interpolate(const AnimationFrameBase& current,
                       const AnimationFrameBase& next, float step) {
@@ -81,7 +77,7 @@ void animate(AnimationComponent& c, const AnimationInstance& inst,
     };
 }
 
-void AnimationSystem::update() {
+void AnimationSystem::update(GameState& state) {
     for (auto& c : COMPONENTS(AnimationComponent)) {
         for (auto animation = c.animations.begin();
              animation != c.animations.end();) {
@@ -133,8 +129,6 @@ void AnimationSystem::update() {
         }
     }
 }
-
-void AnimationSystem::render(float interpolation) {}
 
 size_t AnimationSystem::start_animation(const std::string& name, float speed,
                                         bool loop,
@@ -190,11 +184,11 @@ size_t AnimationSystem::get_animation(const std::string& name) {
     }
 }
 
-bool AnimationSystem::initialize() {
-    AnimationComponent::s_animations = this;
-    return true;
-}
-
+// bool AnimationSystem::initialize() {
+//     AnimationComponent::s_animations = this;
+//     return true;
+// }
+//
 void AnimationSystem::stop_animation(const size_t animation_id) {
     AnimationInstance& inst = m_animationInstances[animation_id];
     inst.loop = false;

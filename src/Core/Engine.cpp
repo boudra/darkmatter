@@ -25,12 +25,11 @@ namespace dm {
 Engine::Engine() : m_window(nullptr), m_exit(false) {}
 
 Engine::~Engine() {
-    m_dispatcher.unsubscribe(this);
-    for(auto& system : m_systems) {
-        delete system;
+    for (auto& vk : m_systems) {
+        state_.unsubscribe(vk.second.get());
     }
-    for(auto& manager : m_managers) {
-        // manager->~BaseManager();
+    for (auto& manager : m_managers) {
+        state_.unsubscribe(manager);
         delete manager;
     }
 }
@@ -38,89 +37,25 @@ Engine::~Engine() {
 bool Engine::initialize() {
     Log::info("Starting engine");
 
-    ManagerBase::s_engine = this;
-    SystemBase::s_engine = this;
-
-    ManagerBase::s_dispatcher = &m_dispatcher;
-    SystemBase::s_dispatcher = &m_dispatcher;
-
     m_window = new Window();
 
     if (!m_window->create()) return false;
     if (!m_window->create_context()) return false;
 
-    this->load_manager<PlayerManager>();
     this->load_manager<ResourceManager>();
 
-    Deserializer::m_resource_manager = this->manager<ResourceManager>();
+    state_.set("resource_manager", *this->manager<ResourceManager>());
 
-    // SystemBase::s_entities = this->manager<EntityManager>();
-    // SystemBase::s_entities->create();
+    this->add_system(new InputSystem());
+    this->add_system(new Camera());
+    this->add_system(new RenderSystem());
 
-    this->add_system<RenderSystem>();
-    this->add_system<InputSystem>();
-    this->add_system<PhysicsSystem>();
-    this->add_system<AnimationSystem>();
-    this->add_system<Camera>();
-    this->add_system<World>();
-
-    std::vector<bool> initialized;
-    initialized.resize(m_systems.size());
-
-    uint32_t initializedCount = 0;
-
-    auto initialize_system = [this, &initialized,
-                              &initializedCount](SystemBase* system) {
-
-        if (!system->initialize()) {
-            Log::error("Failed to initialize %s", system->name().c_str());
-
-            /* Cleanup */
-            delete system;
-
-            return false;
-        }
-
-        system->enable();
-        initialized[system->m_id] = true;
-
-        Log::ok("%s initialized", system->name().c_str());
-
-        initializedCount++;
-
-        // this->manager<EntityManager>()->set_managed_components(system->m_managed,
-        // system);
-
-        return true;
-
-    };
-
-    while (initializedCount < m_systems.size()) {
-        for (SystemBase* system : m_systems) {
-            if (initialized[system->m_id] == true) continue;
-
-            if (system->m_dependencies.empty()) {
-                initialize_system(system);
-            } else {
-                bool satisfied =
-                    std::all_of(system->m_dependencies.begin(),
-                                system->m_dependencies.end(),
-                                [&initialized](const uint32_t& dep) {
-                                    return initialized[dep];
-                                });
-
-                if (satisfied) {
-                    initialize_system(system);
-                }
-            }
-        }
-    }
-
-    this->system<InputSystem>()->set_window(m_window->handle());
+    this->get_system<InputSystem>()->set_window(m_window->handle());
 
     Log::ok("Engine started");
 
-    m_dispatcher.subscribe("quit", this, &Engine::quit);
+    state_.subscribe("quit", this, &Engine::quit);
+    state_.transition_to("initial");
 
     return true;
 }
@@ -131,44 +66,50 @@ void Engine::quit(const QuitEvent& e) {
 }
 
 void Engine::update() {
-    for (size_t i = 0; i < m_systems.size(); ++i) {
-        SystemBase* s = m_systems[i];
-        if (s->enabled()) {
-            s->update();
-        }
+    for (auto& s : m_systems) {
+        if (s.second->enabled()) s.second->update(this->state_);
     }
 }
 
-void Engine::render(float interpolation) {
+void Engine::render() {
     m_window->clear();
 
-    for (SystemBase* s : m_systems) {
-        s->render(interpolation);
+    for (auto& s : m_systems) {
+        if (s.second->enabled()) s.second->render(this->state_);
     }
 
     m_window->swap_buffers();
 }
 
 bool Engine::start() {
-    uint32_t last = 0, current = 0, acumulator = 0, elapsed = 0;
+    using milliseconds =
+        std::chrono::duration<double, std::chrono::milliseconds::period>;
+
+    const auto tick_time = milliseconds(16.0);
+    auto last = std::chrono::high_resolution_clock::now();
+    decltype(last) current;
+    milliseconds acumulator, elapsed;
     bool skipFrame = false;
 
     while (!m_exit) {
         skipFrame = true;
-        current = SDL_GetTicks();
-        elapsed = current - last;
+        current = std::chrono::high_resolution_clock::now();
+        elapsed = milliseconds(current - last);
         acumulator += elapsed;
         last = current;
 
-        while (acumulator >= TICK_TIME) {
+        // Log::debug("%lf", elapsed.count());
+
+        while (acumulator >= tick_time) {
             skipFrame = false;
             this->update();
-            acumulator -= TICK_TIME;
+            acumulator -= tick_time;
+            state_.transition_to("pou");
         }
 
         if (!skipFrame) {
-            this->system<RenderSystem>()->set_frame_time(elapsed);
-            this->render(0.0f);
+            this->state_.set("frame_time", elapsed.count());
+            this->render();
         }
     }
 

@@ -7,18 +7,16 @@
 
 namespace dm {
 
-class PhysicsSystem : public SystemBase {
+class PhysicsSystem : public System {
    public:
-    PhysicsSystem();
-    ~PhysicsSystem();
+    PhysicsSystem() {}
+    ~PhysicsSystem() {}
 
-    void render(float interpolation);
-    void update();
-
-    bool initialize();
-
-   private:
+    void render(const GameState&);
+    void update(GameState&);
 };
+
+dm_internal_register_type(PhysicsSystem)
 
 } /* namespace dm */
 

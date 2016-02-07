@@ -2,6 +2,7 @@
 #define MANAGER_HPP
 
 #include "Core/Logger.hpp"
+#include "Core/GameState.hpp"
 
 #include <cstdint>
 
@@ -13,31 +14,32 @@ class Engine;
 typedef uint32_t ManagerId;
 
 class ManagerBase {
-    public:
-        virtual ~ManagerBase(){};
-    protected:
-        friend class Engine;
+   public:
+    virtual ~ManagerBase(){};
 
-        static EventDispatcher* s_dispatcher;
-        static Engine* s_engine;
+   protected:
+    friend class Engine;
 
-        static ManagerId& counter() {
-            static ManagerId counter = 0;
-            return counter;
-        }
+    static EventDispatcher* s_dispatcher;
+    static Engine* s_engine;
+
+    static ManagerId& counter() {
+        static ManagerId counter = 0;
+        return counter;
+    }
 };
 
 template <typename DerivedType>
 class Manager : public ManagerBase {
-    public:
-        Manager(){};
-        virtual ~Manager(){};
-        virtual const bool initialize() { return true; }
+   public:
+    Manager(){};
+    virtual ~Manager(){};
+    virtual const bool initialize(GameState& state) { return true; }
 
-        static ManagerId id() {
-            static ManagerId id = counter()++;
-            return id;
-        }
+    static ManagerId id() {
+        static ManagerId id = counter()++;
+        return id;
+    }
 };
 }
 

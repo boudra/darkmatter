@@ -8,8 +8,7 @@
 #include <string>
 
 #include "Core/Entity.hpp"
-
-#define SYSTEM(TYPE) dm::SystemId<TYPE>::id()
+#include "Core/GameState.hpp"
 
 namespace dm {
 
@@ -17,70 +16,21 @@ class EntityManager;
 class Engine;
 class EventDispatcher;
 
-class SystemBase {
+class System {
    public:
-    SystemBase(const std::string& name) : SystemBase(name, {}, {}) {}
+    System() : _enabled(false) {}
+    virtual ~System() {}
 
-    SystemBase(const std::string& name,
-               std::initializer_list<uint32_t> dependencies,
-               std::initializer_list<uint32_t> managed)
-        : m_enabled(false),
-          m_name(name),
-          m_dependencies(dependencies),
-          m_managed(managed) {}
+    const bool enabled() const { return _enabled; }
 
-    virtual ~SystemBase() {}
+    void disable() { _enabled = false; }
+    void enable() { _enabled = true; }
 
-    const bool enabled() const;
-
-    void disable();
-    void enable();
-
-    virtual void update() = 0;
-    virtual void render(float interpolation) = 0;
-    virtual bool initialize() = 0;
-    virtual void component_added(const uint32_t componentType, Entity e) {}
-
-    const std::string& name() { return m_name; }
-
-   protected:
-    static EntityManager* s_entities;
-    static Engine* s_engine;
-    static EventDispatcher* s_dispatcher;
-
-    bool m_enabled;
-
-    std::string m_name;
+    virtual void update(GameState&) = 0;
+    virtual void render(const GameState&) = 0;
 
    private:
-    std::vector<uint32_t> m_dependencies;
-    std::vector<uint32_t> m_managed;
-
-    uint32_t m_id;
-
-    template <class SystemType>
-    friend class SystemId;
-
-    friend class Engine;
-
-    static uint32_t& counter() {
-        static uint32_t counter = 0;
-        return counter;
-    }
-};
-
-inline const bool SystemBase::enabled() const { return m_enabled; }
-
-inline void SystemBase::enable() { m_enabled = true; }
-inline void SystemBase::disable() { m_enabled = false; }
-
-template <class SystemType>
-class SystemId {
-   public:
-    static uint32_t id() {
-        static uint32_t id = SystemBase::counter()++;
-        return id;
-    }
+    bool _enabled;
 };
 }
 

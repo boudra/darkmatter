@@ -10,15 +10,13 @@
 
 namespace dm {
 
-class AnimationSystem : public SystemBase {
+class AnimationSystem : public System {
    public:
-    AnimationSystem();
-    ~AnimationSystem();
+    AnimationSystem() {}
+    ~AnimationSystem() {}
 
-    void update();
-    void render(float interpolation);
-
-    bool initialize();
+    void update(GameState&);
+    void render(const GameState&) {}
 
     size_t start_animation(const std::string& name, float speed = 1.0f,
                            bool loop = false,

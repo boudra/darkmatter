@@ -2,6 +2,7 @@
 #define PLAYER_MANAGER_HPP
 
 #include "Core/Manager.hpp"
+#include "Core/GameState.hpp"
 #include "Core/EntityManager.hpp"
 #include "Event/Event.hpp"
 
@@ -16,6 +17,13 @@ class PlayerManager : public Manager<PlayerManager> {
     void button_released(const KeyboardEvent& e);
     void mouse_motion(const MouseEvent& e);
     void mouse_click(const MouseEvent& e);
+
+    const bool initialize(GameState& state) {
+        state.subscribe("key_up", this, &PlayerManager::button_released);
+        state.subscribe("mouse_motion", this, &PlayerManager::mouse_motion);
+        state.subscribe("mouse_click", this, &PlayerManager::mouse_click);
+        return true;
+    }
 
     void set_player(Entity* player);
     const Entity* player() const;

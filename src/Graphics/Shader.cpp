@@ -65,6 +65,7 @@ bool ProgramShader::load(const char* filename, Shader::Type type) {
     std::ifstream file(filename, std::ios::in);
 
     if (!file.is_open()) {
+        Log::error("Failed to load shader file: %s", filename);
         return false;
     }
 
@@ -73,7 +74,7 @@ bool ProgramShader::load(const char* filename, Shader::Type type) {
     size = file.tellg();
     file.seekg(0, std::ios::beg);
 
-    data = new char[size+1];
+    data = new char[size + 1];
 
     file.read(data, size);
 
@@ -94,7 +95,6 @@ bool ProgramShader::load(const char* filename, Shader::Type type) {
 }
 
 bool ProgramShader::load_source(const char* data, Shader::Type type) {
-
     assert(m_linked == false, "Program is already linked");
 
     /* Create the program */
@@ -138,16 +138,13 @@ bool ProgramShader::load_source(const char* data, Shader::Type type) {
         char* log = new char[length];
         glGetShaderInfoLog(shader.id, length, &lengthRead, log);
 
-        Log::result(Log::Result::ERROR);
-        Log::debug("Error log: %s", log);
+        Log::error("Failed to compile shader, errror log: %s", log);
 
         glDeleteShader(shader.id);
 
         delete[] log;
         return false;
     }
-
-    Log::result(Log::Result::OK);
 
     shader.compiled = true;
 

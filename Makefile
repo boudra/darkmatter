@@ -14,3 +14,6 @@ test:
 clean:
 	rm -rf build/*
 	rm -rf tests/*
+
+format:
+	find src/**/*.[hc]pp | xargs clang-format -i -style=file

@@ -11,8 +11,7 @@
 #define COMPONENT(TYPE) dm_type_id(TYPE)
 #define COMPONENTS(TYPE) dm::MemoryPool<TYPE>::instance()
 
-#define dm_register_component(type)              \
-    dm_internal_memory_pool(type)
+#define dm_register_component(type) dm_internal_memory_pool(type)
 
 namespace dm {
 
