@@ -75,8 +75,22 @@ class Stack {
     object_type& top() { return data_[top_ - 1]; }
     bool empty() { return (top_ == 0); }
     void clear() { top_ = 0; }
-    object_type* begin() { return data_; }
-    object_type* end() { return data_ + top_; }
+
+    std::reverse_iterator<object_type*> begin() {
+        return std::reverse_iterator<object_type*>(data_ + top_);
+    }
+
+    std::reverse_iterator<object_type*> end() {
+        return std::reverse_iterator<object_type*>(data_);
+    }
+
+    object_type* rbegin() {
+        return data_;
+    }
+
+    object_type* rend() {
+        return data_ + top_;
+    }
 
     /* sort it in descending order in memory (ascending in pop order) */
     void sort() { std::sort(data_, data_ + top_, std::greater<object_type>()); }
@@ -87,9 +101,11 @@ class Stack {
     unsigned int top_;
 };
 
-template <typename object_type, size_t ns = 0, size_t block_size = 10>
+template <typename object_type, size_t ns = 0, size_t wanted_block_size = 10>
 class MemoryPool {
    public:
+    static constexpr size_t block_size = wanted_block_size;
+
     struct Block {
         object_type data_[block_size];
         Block* next_;
@@ -192,8 +208,7 @@ class MemoryPool {
     ~MemoryPool() { cleanup(); }
 
     bool is_free(object_type* object) {
-        return std::binary_search(free_.begin(), free_.end(), object,
-                                  std::equal_to<object_type*>());
+        return std::binary_search(free_.begin(), free_.end(), object);
     }
 
     Block* get_block(object_type* object) {
@@ -295,7 +310,6 @@ class MemoryPool {
 
 #define dm_memory_pool_impl(object_type)                                       \
     void* operator new(size_t size) {                                          \
-        dm::Log::debug("%lu", size);\
         object_type* ptr = object_type::memory_pool::instance().allocate(size); \
         return ptr;                                                            \
     }                                                                          \
