@@ -131,24 +131,10 @@ void Engine::quit(const QuitEvent& e) {
 }
 
 void Engine::update() {
-    std::future<void> futures[30];
     for (size_t i = 0; i < m_systems.size(); ++i) {
         SystemBase* s = m_systems[i];
         if (s->enabled()) {
-            if (s->name() == "Input") {
-                s->update();
-            } else {
-                futures[i] = std::async(std::launch::async, [s]() {
-                    std::lock_guard<std::mutex> lk1(
-                        MemoryPool<Entity>::mutex());
-                    s->update();
-                });
-            }
-        }
-    }
-    for (std::future<void>& f : futures) {
-        if (f.valid()) {
-            f.wait();
+            s->update();
         }
     }
 }
