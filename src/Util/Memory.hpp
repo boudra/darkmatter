@@ -72,6 +72,7 @@ class Stack {
     }
 
     object_type& pop() { return data_[--top_]; }
+    object_type& top() { return data_[top_ - 1]; }
     bool empty() { return (top_ == 0); }
     void clear() { top_ = 0; }
     object_type* begin() { return data_; }
@@ -192,7 +193,7 @@ class MemoryPool {
 
     bool is_free(object_type* object) {
         return std::binary_search(free_.begin(), free_.end(), object,
-                                  std::greater<object_type*>());
+                                  std::equal_to<object_type*>());
     }
 
     Block* get_block(object_type* object) {
@@ -294,6 +295,7 @@ class MemoryPool {
 
 #define dm_memory_pool_impl(object_type)                                       \
     void* operator new(size_t size) {                                          \
+        dm::Log::debug("%lu", size);\
         object_type* ptr = object_type::memory_pool::instance().allocate(size); \
         return ptr;                                                            \
     }                                                                          \
